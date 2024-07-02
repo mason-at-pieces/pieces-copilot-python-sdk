@@ -154,8 +154,8 @@ if conversation_response:
 
     # 3. Ask a question within the created conversation
     question_response = pieces_client.prompt_conversation(
-      message="Can you give me an example code snippet?",
-      conversation_id=conversation_id
+        message="Can you give me an example code snippet?",
+        conversation_id=conversation_id
     )
     print("Question Response:", question_response['text'])
 
