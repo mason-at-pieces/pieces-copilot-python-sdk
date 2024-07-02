@@ -63,7 +63,7 @@ class PiecesClient:
 
             if first_message:
                 answer = self.prompt_conversation(
-                    message=first_message,
+                    question=first_message,
                     conversation_id=new_conversation.id,
                 )
 
