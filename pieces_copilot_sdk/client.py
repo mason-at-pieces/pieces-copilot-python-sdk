@@ -184,7 +184,7 @@ class PiecesClient:
 
             answer = self.qgpt_api.question(
                 qgpt_question_input={
-                    'query': message,
+                    'query': question,
                     'pipeline': {
                         'conversation': {
                             'contextualizedCodeDialog': {},
