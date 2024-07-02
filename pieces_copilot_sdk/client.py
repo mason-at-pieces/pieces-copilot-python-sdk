@@ -139,7 +139,7 @@ class PiecesClient:
             print(f'Error asking question: {error}')
             return 'Error asking question'
 
-    def prompt_conversation(self, message: str, conversation_id: str, regenerate_conversation_name: bool = False) -> dict:
+    def prompt_conversation(self, question: str, conversation_id: str, regenerate_conversation_name: bool = False) -> dict:
         try:
             conversation = self.get_conversation(
                 conversation_id=conversation_id,
@@ -155,7 +155,7 @@ class PiecesClient:
                     'role': 'USER',
                     'fragment': {
                         'string': {
-                            'raw': message,
+                            'raw': question,
                         },
                     },
                     'conversation': {'id': conversation_id},

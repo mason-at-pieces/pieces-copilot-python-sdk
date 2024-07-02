@@ -26,7 +26,7 @@ First, you need to import the SDK and initialize it with your base URL. The base
 Here's how you can initialize the SDK:
 
 ```python
-from pieces_client import PiecesClient
+from pieces_copilot_sdk import PiecesClient
 
 # Replace 'your_base_url' with your actual base URL
 pieces_client = PiecesClient(config={'baseUrl': 'your_base_url'})
@@ -78,7 +78,7 @@ Example usage:
 conversations = pieces_client.get_conversations()
 ```
 
-### `prompt_conversation(message, conversation_id, regenerate_conversation_name=False)`
+### `prompt_conversation(question, conversation_id, regenerate_conversation_name=False)`
 
 This method prompts a conversation with a message. It takes a message string, conversation ID, and an optional flag to regenerate the conversation name (default is `False`). It returns a dictionary containing the text of the answer, the ID of the user query message, and the ID of the bot response message.
 
@@ -113,6 +113,58 @@ Example usage:
 
 ```python
 profile_picture_url = pieces_client.get_user_profile_picture()
+```
+
+## Full Example
+
+Here's a full example of how to use all the methods provided by the SDK:
+
+```python
+from pieces_copilot_sdk import PiecesClient
+
+# Create an instance of PiecesClient
+pieces_client = PiecesClient(
+    config={
+        'baseUrl': 'http://localhost:1000'
+    }
+)
+
+# 1. Create a new conversation
+conversation_response = pieces_client.create_conversation(
+    props={
+        "name": "Test Conversation",
+        "firstMessage": "Hello, how can I use the API?"
+    }
+)
+
+# Check if the conversation was created successfully
+if conversation_response:
+    print("Conversation Created:", conversation_response['conversation'].id)
+    print("First Message Response:", conversation_response['answer']['text'])
+
+    # 2. Get the created conversation details
+    conversation_id = conversation_response['conversation'].id
+    conversation_details = pieces_client.get_conversation(
+        conversation_id=conversation_id,
+        include_raw_messages=True
+    )
+    print("Conversation Name:", conversation_details.name)
+
+    # 3. Ask a question within the created conversation
+    question_response = pieces_client.prompt_conversation(
+        question="Can you give me an example code snippet?",
+        conversation_id=conversation_id
+    )
+    print("Question Response:", question_response['text'])
+
+# 4. Retrieve all conversations and print their names
+all_conversations = pieces_client.get_conversations()
+for conversation in all_conversations:
+    print("Conversation Name:", conversation.name)
+
+# 5. Get user profile picture
+profile_picture = pieces_client.get_user_profile_picture()
+print("User Profile Picture URL:", profile_picture)
 ```
 
 ## Contributing
