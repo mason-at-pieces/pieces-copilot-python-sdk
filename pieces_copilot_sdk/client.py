@@ -7,7 +7,6 @@ from pieces_os_client import (
     ConversationMessagesApi,
     ConversationsApi,
     QGPTApi,
-    QGPTConversationMessageRoleEnum,
     UserApi,
 )
 
