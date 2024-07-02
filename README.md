@@ -132,8 +132,8 @@ pieces_client = PiecesClient(
 # 1. Create a new conversation
 conversation_response = pieces_client.create_conversation(
     props={
-        "name": "Actual Conversation",
-        "firstMessage": "What is 2+2"
+        "name": "Test Conversation",
+        "firstMessage": "Hello, how can I use the API?"
     }
 )
 
@@ -149,14 +149,14 @@ if conversation_response:
         include_raw_messages=True
     )
 
-# Access the conversation name using the key
+    # Access the conversation name using the key
     print("Conversation Name:", conversation_details.get('name'))
 
     # 3. Ask a question within the created conversation
     question_response = pieces_client.prompt_conversation(
-    message="What is 4+4",
-    conversation_id=conversation_id
-)
+      message="Can you give me an example code snippet?",
+      conversation_id=conversation_id
+    )
     print("Question Response:", question_response['text'])
 
 # 4. Retrieve all conversations and print their names
