@@ -5,3 +5,5 @@ vscode
 
 # Build files
 dist
+build
+*.egg-info

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pieces_copilot_sdk"
-version = "0.1.1"
+version = "0.2.0"
 description = "A Pieces OS SDK wrapper that allows anyone to easily create a Pieces Copilot experience with minimal code."
 authors = ["Mason Williams <mason@pieces.app>"]
 license = "MIT"
