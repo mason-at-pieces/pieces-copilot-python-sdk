@@ -148,11 +148,13 @@ if conversation_response:
         conversation_id=conversation_id,
         include_raw_messages=True
     )
-    print("Conversation Name:", conversation_details.name)
+
+    # Access the conversation name using the key
+    print("Conversation Name:", conversation_details.get('name'))
 
     # 3. Ask a question within the created conversation
     question_response = pieces_client.prompt_conversation(
-        question="Can you give me an example code snippet?",
+        message="Can you give me an example code snippet?",
         conversation_id=conversation_id
     )
     print("Question Response:", question_response['text'])
