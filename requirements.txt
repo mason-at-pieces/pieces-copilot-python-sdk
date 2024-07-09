@@ -1,1 +1,1 @@
-pieces_os_client
+pieces_os_client>=2.6.0
