@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="pieces_copilot_sdk",
-    version="0.5.0",
+    version="0.6.0",
     author="Mason Williams",
     author_email="mason@pieces.app",
     description="A Pieces OS SDK wrapper that allows anyone to easily create a Pieces Copilot experience with minimal code.",
