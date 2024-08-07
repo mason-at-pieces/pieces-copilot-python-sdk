@@ -1,9 +1,18 @@
 from pieces_os_client import QGPTStreamOutput,QGPTStreamInput
-from websocket import WebSocketConnectionClosedException
+from websocket import WebSocketConnectionClosedException,WebSocketApp
 
 from .base_websocket import BaseWebsocket
+from ..client import PiecesClient
+
+from typing import Callable,Optional
 
 class AskStreamWS(BaseWebsocket):
+	def __init__(self, pieces_client: PiecesClient,
+		on_message_callback: Callable[[QGPTStreamOutput],None], 
+		on_open_callback: Optional[Callable[[WebSocketApp], None]] = None, 
+		on_error: Optional[Callable[[WebSocketApp, Exception], None]] = None, 
+		on_close: Optional[Callable[[WebSocketApp], None]] = None):
+		super().__init__(pieces_client, on_message_callback, on_open_callback, on_error, on_close)
 	@property
 	def url(self):
 		return self.pieces_client.ASK_STREAM_WS_URL

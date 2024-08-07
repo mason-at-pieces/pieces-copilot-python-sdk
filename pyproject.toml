@@ -9,6 +9,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.7"
 pieces_os_client = "^2.7.0"
+websocket-client = "^1.8.0"
 
 [build-system]
 requires = ["poetry-core"]

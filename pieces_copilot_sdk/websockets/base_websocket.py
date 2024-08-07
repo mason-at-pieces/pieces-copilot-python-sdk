@@ -15,15 +15,15 @@ class BaseWebsocket(ABC):
 
 	def __init__(self,
 			pieces_client:PiecesClient,
-			on_message_callback:Callable,
-			on_open_callback:Callable=lambda :None,
-			on_error:Callable=None,
-			on_close:Callable=None):
+			on_message_callback: Callable[[str],None],
+			on_open_callback: Optional[Callable[[websocket.WebSocketApp], None]] = None,
+			on_error: Optional[Callable[[websocket.WebSocketApp, Exception], None]] = None,
+			on_close: Optional[Callable[[websocket.WebSocketApp], None]] = None):
 		self.ws = None
 		self.thread = None
 		self.running = False
 		self.on_message_callback = on_message_callback
-		self.on_open_callback = on_open_callback
+		self.on_open_callback = on_open_callback if on_open_callback else lambda:None
 		self.on_error = on_error if on_error else lambda ws, error: print(error)
 		self.on_close = on_close if on_close else lambda ws,close_status_code,close_msg:None
 		self.pieces_client = pieces_client

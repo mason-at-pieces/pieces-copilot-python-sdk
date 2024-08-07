@@ -1,6 +1,3 @@
-from typing import Optional
-
-
 from ._streamed_identifiers import StreamedIdentifiersCache
 from pieces_os_client import (Asset, 
 							AssetsApi,
@@ -10,18 +7,23 @@ from pieces_os_client import (Asset,
 							ClassificationGenericEnum,
 							Annotation,
 							Format,
-							Classification)
+							Classification,
+							Annotations)
 
 
 from typing import Optional, Union
 
-class AssetSnapshot(StreamedIdentifiersCache,
-	api_call=AssetApi(Settings.api_client).asset_snapshot):
-	def __init__(self,asset_id) -> None:
+class AssetSnapshot(StreamedIdentifiersCache):
+	def __init__(self,asset_id:str) -> None:
 		self._asset_id = asset_id
 		self.asset = self.get_asset(asset_id)
 		super().__init__()
-	
+
+
+	def _api_call(self,id):
+		asset = self.pieces_client.asset_api.asset_snapshot(id)
+		self.on_update(asset)
+
 	@classmethod
 	def get_asset(cls,asset_id) -> Optional[Asset]:
 		return cls.identifiers_snapshot.get(asset_id)
@@ -33,11 +35,10 @@ class AssetSnapshot(StreamedIdentifiersCache,
 	def edit_asset_original_format(self,data) -> None:
 		if not self.asset:
 			raise AttributeError("Asset not found")
-		format_api = FormatApi(Settings.api_client)
+		format_api = self.pieces_client.format_api
 		original = format_api.format_snapshot(self.asset.original.id, transferable=True)
 		if original.classification.generic == ClassificationGenericEnum.IMAGE:
-			# TODO: Ability to edit images
-			return Settings.nvim.async_call(Settings.nvim.err_write,"Can't edit an image formated asset")
+			raise NotImplemented("Can't edit an image yet")
 
 		if original.fragment.string.raw:
 			original.fragment.string.raw = data
@@ -93,21 +94,25 @@ class AssetSnapshot(StreamedIdentifiersCache,
 
 	@property
 	def name(self) -> Optional[str]:
-		return self.asset.name if self.asset else None
+		return self.asset.name if self.asset else "Unnamed snippet"
 	
 	@staticmethod
 	def sort_first_shot():
 		pass
 
-	def get_annotation(self) -> Optional[Annotation]:
+	def get_description(self) -> Optional[Annotation]:
 		if not self.asset:
 			return
-		annotations = self.asset.annotations.iterable
+		annotations = self.get_annotations
 		annotations = sorted(annotations, key=lambda x: x.updated.value, reverse=True)
 		for annotation in annotations:
 			if annotation.type == "DESCRIPTION":
 				return annotation
 
+	def get_annotations(self) -> Optional[Annotations]:
+		if not self.asset:
+			return
+		return self.asset.annotations.iterable
+
 	def delete(self):
-		delete_instance = AssetsApi(Settings.api_client)
-		delete_instance.assets_delete_asset(self._asset_id)
+		self.pieces_client.assets_api.assets_delete_asset(self._asset_id)

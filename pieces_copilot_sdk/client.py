@@ -8,6 +8,7 @@ from pieces_os_client import (
     ConversationsApi,
     QGPTApi,
     UserApi,
+    FormatApi
 )
 from pieces_os_client.api.asset_api import AssetApi
 from pieces_os_client.api.assets_api import AssetsApi
@@ -28,6 +29,7 @@ class PiecesClient:
         self.user_api = UserApi(self.api_client)
         self.assets_api = AssetsApi(self.api_client)
         self.asset_api = AssetApi(self.api_client)
+        self.format_api = FormatApi(self.api_client)
 
         # Websocket urls
         ws_base_url = config['baseUrl'].replace('http','ws')
