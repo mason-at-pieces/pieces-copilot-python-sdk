@@ -9,6 +9,8 @@ from pieces_os_client import (
     QGPTApi,
     UserApi,
 )
+from pieces_os_client.api.asset_api import AssetApi
+from pieces_os_client.api.assets_api import AssetsApi
 
 class PiecesClient:
     def __init__(self, config: dict, tracked_application: Application = None):
@@ -24,9 +26,19 @@ class PiecesClient:
         self.conversation_api = ConversationApi(self.api_client)
         self.qgpt_api = QGPTApi(self.api_client)
         self.user_api = UserApi(self.api_client)
+        self.assets_api = AssetsApi(self.api_client)
+        self.asset_api = AssetApi(self.api_client)
+
+        # Websocket urls
+        ws_base_url = config['baseUrl'].replace('http','ws')
+        self.ASSETS_IDENTIFIERS_WS_URL = ws_base_url + "/assets/stream/identifiers"
+        self.AUTH_WS_URL = ws_base_url + "/user/stream"
+        self.ASK_STREAM_WS_URL = ws_base_url + "/qgpt/stream"
+        self.CONVERSATION_WS_URL = ws_base_url + "/conversations/stream/identifiers"
+        self.HEALTH_WS_URL = ws_base_url + "/.well-known/stream/health"
+
 
         self.tracked_application = tracked_application or Application(
-            id='DEFAULT',
             name="OPEN_SOURCE",
             version='0.0.1',
             platform="MACOS",
