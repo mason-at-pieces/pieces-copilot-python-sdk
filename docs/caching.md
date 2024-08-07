@@ -10,8 +10,7 @@ We cache the assets and the conversations for you to use and avoid sending too m
 ```python
 from typing import Callable, Optional
 from websocket import WebSocketApp
-from pieces_os_client import Conversation
-from pieces_copilot_sdk,websockets import AssetsIdentifiersWS
+from pieces_copilot_sdk.websockets import AssetsIdentifiersWS
 from pieces_copilot_sdk.streamed_identifiers import AssetsSnapshot
 from pieces_copilot_sdk import PiecesClient
 import time
@@ -47,8 +46,7 @@ name = asset_wrapper.name
 ```python
 from typing import Callable, Optional
 from websocket import WebSocketApp
-from pieces_os_client import Conversation
-from pieces_copilot_sdk,websockets import ConversationWS
+from pieces_copilot_sdk.websockets import ConversationWS
 from pieces_copilot_sdk.streamed_identifiers import ConversationSnapshot
 from pieces_copilot_sdk import PiecesClient
 import time
