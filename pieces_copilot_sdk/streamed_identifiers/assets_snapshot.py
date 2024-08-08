@@ -19,10 +19,11 @@ class AssetSnapshot(StreamedIdentifiersCache):
 		self.asset = self.get_asset(asset_id)
 		super().__init__()
 
-
-	def _api_call(self,id):
-		asset = self.pieces_client.asset_api.asset_snapshot(id)
-		self.on_update(asset)
+	@classmethod
+	def _api_call(cls,id):
+		asset = cls.pieces_client.asset_api.asset_snapshot(id)
+		cls.on_update(asset)
+		return asset
 
 	@classmethod
 	def get_asset(cls,asset_id) -> Optional[Asset]:

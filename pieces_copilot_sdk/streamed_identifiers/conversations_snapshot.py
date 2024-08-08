@@ -1,4 +1,4 @@
-from ..streamed_identifiers import StreamedIdentifiersCache
+from ._streamed_identifiers import StreamedIdentifiersCache
 
 class ConversationsSnapshot(StreamedIdentifiersCache):
 	@classmethod
@@ -7,5 +7,8 @@ class ConversationsSnapshot(StreamedIdentifiersCache):
 		sorted_conversations = sorted(cls.identifiers_snapshot.values(), key=lambda x: x.updated.value, reverse=True)
 		cls.identifiers_snapshot = {conversation.id:conversation for conversation in sorted_conversations}
 
-	def _api_call(self,id):
-		self.pieces_client.conversation_get_specific_conversation(id)
+	@classmethod
+	def _api_call(cls,id):
+		con = cls.pieces_client.conversation_api.conversation_get_specific_conversation(id)
+		cls.on_update()
+		return con
