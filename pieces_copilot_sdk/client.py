@@ -8,13 +8,16 @@ from pieces_os_client import (
     ConversationsApi,
     QGPTApi,
     UserApi,
-    FormatApi
+    FormatApi,
+    ConnectorApi,
+    SeededConnectorConnection
 )
+import platform
 from pieces_os_client.api.asset_api import AssetApi
 from pieces_os_client.api.assets_api import AssetsApi
 
 class PiecesClient:
-    def __init__(self, config: dict, tracked_application: Application = None):
+    def __init__(self, config: dict, seeded_connector: SeededConnectorConnection = None):
         self.config = Configuration(
             host=config['baseUrl']
         )
@@ -30,6 +33,7 @@ class PiecesClient:
         self.assets_api = AssetsApi(self.api_client)
         self.asset_api = AssetApi(self.api_client)
         self.format_api = FormatApi(self.api_client)
+        self.connector_api = ConnectorApi(self.api_client)
 
         # Websocket urls
         if 'http' not in config['baseUrl']:
@@ -42,14 +46,18 @@ class PiecesClient:
         self.CONVERSATION_WS_URL = ws_base_url + "/conversations/stream/identifiers"
         self.HEALTH_WS_URL = ws_base_url + "/.well-known/stream/health"
 
+        local_os = platform.system().upper() if platform.system().upper() in ["WINDOWS","LINUX","DARWIN"] else "WEB"
+        local_os = "MACOS" if local_os == "DARWIN" else local_os
+        seeded_connector = seeded_connector or SeededConnectorConnection(
+            application=pos_client.SeededTrackedApplication(
+                name = "OPEN_SOURCE",
+                platform = local_os,
+                version = "0.0.1"))
 
-        self.tracked_application = tracked_application or Application(
-            name="OPEN_SOURCE",
-            version='0.0.1',
-            platform="MACOS",
-            onboarded=False,
-            privacy="ANONYMOUS",
-        )
+        self.tracked_application = self.get_application(seeded_connector)
+
+    def get_application(self,seeded_connector_connection)-> Application:
+        return self.connector_api.connect(seeded_connector_connection=seeded_connector_connection).application
 
     @staticmethod
     def application_to_dict(application: Application) -> dict:
