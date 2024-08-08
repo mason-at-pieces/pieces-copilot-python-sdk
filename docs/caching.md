@@ -17,7 +17,7 @@ import time
 
 pieces_client = PiecesClient(config={'baseUrl': 'your_base_url'})
 
-conversation_ws = ConversationWS(pieces_client=pieces_client).start() # Need to connect to the websocket
+conversation_ws = AssetsIdentifiersWS(pieces_client=pieces_client).start() # Need to connect to the websocket
 time.sleep(4) # Wait until all assets is cached 
 AssetsSnapshot.identifiers_snapshot.values() # return list of Asset
 AssetsSnapshot.identifiers_snapshot.items() # return list of str (assets ids)
