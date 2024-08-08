@@ -10,7 +10,8 @@ from pieces_os_client import (
     UserApi,
     FormatApi,
     ConnectorApi,
-    SeededConnectorConnection
+    SeededConnectorConnection,
+    SeededTrackedApplication
 )
 import platform
 from pieces_os_client.api.asset_api import AssetApi
@@ -49,7 +50,7 @@ class PiecesClient:
         local_os = platform.system().upper() if platform.system().upper() in ["WINDOWS","LINUX","DARWIN"] else "WEB"
         local_os = "MACOS" if local_os == "DARWIN" else local_os
         seeded_connector = seeded_connector or SeededConnectorConnection(
-            application=pos_client.SeededTrackedApplication(
+            application=SeededTrackedApplication(
                 name = "OPEN_SOURCE",
                 platform = local_os,
                 version = "0.0.1"))
