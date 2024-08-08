@@ -11,16 +11,18 @@ from pieces_os_client import (
     FormatApi,
     ConnectorApi,
     SeededConnectorConnection,
-    SeededTrackedApplication
+    SeededTrackedApplication,
+    AssetApi,
+    AssetsApi
 )
 import platform
-from pieces_os_client.api.asset_api import AssetApi
-from pieces_os_client.api.assets_api import AssetsApi
 
 class PiecesClient:
     def __init__(self, config: dict, seeded_connector: SeededConnectorConnection = None):
+        self.host = config['baseUrl'][:-1] if config['baseUrl'].endswith("/") else config['baseUrl']
+
         self.config = Configuration(
-            host=config['baseUrl']
+            host=self.host
         )
 
         self.api_client = pieces_os_client.ApiClient(self.config)
@@ -37,10 +39,10 @@ class PiecesClient:
         self.connector_api = ConnectorApi(self.api_client)
 
         # Websocket urls
-        if 'http' not in config['baseUrl']:
-            raise TypeError("Invalid url it should start with http or https")
-        ws_base_url:str = config['baseUrl'].replace('http','ws')
-        ws_base_url = ws_base_url[:-1] if ws_base_url.endswith("/") else ws_base_url
+        if 'http' not in self.host:
+            raise TypeError("Invalid host url\n Host should start with http or https")
+        ws_base_url:str = self.host.replace('http','ws')
+        
         self.ASSETS_IDENTIFIERS_WS_URL = ws_base_url + "/assets/stream/identifiers"
         self.AUTH_WS_URL = ws_base_url + "/user/stream"
         self.ASK_STREAM_WS_URL = ws_base_url + "/qgpt/stream"
