@@ -32,7 +32,10 @@ class PiecesClient:
         self.format_api = FormatApi(self.api_client)
 
         # Websocket urls
-        ws_base_url = config['baseUrl'].replace('http','ws')
+        if 'http' not in config['baseUrl']:
+            raise TypeError("Invalid url it should start with http or https")
+        ws_base_url:str = config['baseUrl'].replace('http','ws')
+        ws_base_url = ws_base_url[:-1] if ws_base_url.endswith("/") else ws_base_url
         self.ASSETS_IDENTIFIERS_WS_URL = ws_base_url + "/assets/stream/identifiers"
         self.AUTH_WS_URL = ws_base_url + "/user/stream"
         self.ASK_STREAM_WS_URL = ws_base_url + "/qgpt/stream"
