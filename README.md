@@ -115,6 +115,18 @@ Example usage:
 profile_picture_url = pieces_client.get_user_profile_picture()
 ```
 
+### `ask_question()`
+
+This method allows the user to ask a question and receive a response. It takes a single argument, `question`, which is a string representing the query.
+The method returns a string containing the response to the question.
+
+
+Example usage:
+
+```python
+response = pieces_client.ask_question("What is Pieces for Developers?")
+```
+
 ## Full Example
 
 Here's a full example of how to use all the methods provided by the SDK:
@@ -167,6 +179,11 @@ for conversation in all_conversations:
 # 5. Get user profile picture
 profile_picture = pieces_client.get_user_profile_picture()
 print("User Profile Picture URL:", profile_picture)
+
+# 6. Ask a question
+question = "What is Pieces for Developer?"
+response = pieces_client.ask_question(question)
+print("Question Response:", response)
 ```
 
 ## Contributing
