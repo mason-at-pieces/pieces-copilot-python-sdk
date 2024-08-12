@@ -42,6 +42,18 @@ Then, you can use the various methods provided by the SDK to interact with your 
 
 ## Methods
 
+### `ask_question()`
+
+This method allows the user to ask a question and receive a response. It takes a single argument, `question`, which is a string representing the query.
+The method returns a string containing the response to the question.
+
+
+Example usage:
+
+```python
+response = pieces_client.ask_question("What is Pieces for Developers?")
+```
+
 ### `create_conversation(name=None, first_message=None)`
 
 This method creates a new conversation. It takes an optional name and optional first message as parameters. It returns a dictionary containing the new conversation and the answer to the first message (if provided).
@@ -53,29 +65,6 @@ new_conversation = pieces_client.create_conversation(
     name='Hello World Conversation',
     first_message='Hello, world!'
 )
-```
-
-### `get_conversation(conversation_id, include_raw_messages=False)`
-
-This method retrieves a conversation by its ID. You can choose to include raw messages in the conversation by setting the `include_raw_messages` parameter to `True`. It returns a dictionary representing the Conversation object or `None`.
-
-Example usage:
-
-```python
-conversation = pieces_client.get_conversation(
-    conversation_id='conversationId',
-    include_raw_messages=True
-)
-```
-
-### `get_conversations()`
-
-This method retrieves all conversations. It returns a list of Conversation objects or `None`.
-
-Example usage:
-
-```python
-conversations = pieces_client.get_conversations()
 ```
 
 ### `prompt_conversation(question, conversation_id, regenerate_conversation_name=False)`
@@ -95,6 +84,20 @@ answer = pieces_client.prompt_conversation(
 )
 ```
 
+
+### `get_conversation(conversation_id, include_raw_messages=False)`
+
+This method retrieves a conversation by its ID. You can choose to include raw messages in the conversation by setting the `include_raw_messages` parameter to `True`. It returns a dictionary representing the Conversation object or `None`.
+
+Example usage:
+
+```python
+conversation = pieces_client.get_conversation(
+    conversation_id='conversationId',
+    include_raw_messages=True
+)
+```
+
 ### `update_conversation_name(conversation_id)`
 
 This method generates a new name for a specific conversation based on the messages that have been sent. It takes a conversation ID as a parameter. It returns a string representing the updated conversation name or `None`.
@@ -103,6 +106,16 @@ Example usage:
 
 ```python
 updated_name = pieces_client.update_conversation_name(conversation_id='conversationId')
+```
+
+### `get_conversations()`
+
+This method retrieves all conversations. It returns a list of Conversation objects or `None`.
+
+Example usage:
+
+```python
+conversations = pieces_client.get_conversations()
 ```
 
 ### `get_user_profile_picture()`
@@ -167,6 +180,11 @@ for conversation in all_conversations:
 # 5. Get user profile picture
 profile_picture = pieces_client.get_user_profile_picture()
 print("User Profile Picture URL:", profile_picture)
+
+# 6. Ask a question
+question = "What is Pieces for Developer?"
+response = pieces_client.ask_question(question)
+print("Question Response:", response)
 ```
 
 ## Contributing
