@@ -1,1 +1,2 @@
 pieces_os_client>=2.7.0
+websocket-client>=1.8.0

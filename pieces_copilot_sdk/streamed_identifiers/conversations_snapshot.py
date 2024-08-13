@@ -1,6 +1,12 @@
 from ._streamed_identifiers import StreamedIdentifiersCache
 
 class ConversationsSnapshot(StreamedIdentifiersCache):
+	"""
+	A class to represent a snapshot of all the cached Conversations.
+	
+	Class attributes:
+	identifiers_snapshot (dict): A dictionary where the keys are UUIDs (unique identifiers) and the values are Conversation objects.
+	"""
 	@classmethod
 	def sort_first_shot(cls):
 		# Sort the dictionary by the "updated" timestamp

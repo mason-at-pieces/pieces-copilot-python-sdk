@@ -21,8 +21,11 @@ from pieces_os_client import (
 from typing import Optional, Union
 class AssetSnapshot(StreamedIdentifiersCache):
 	"""
-	A class to represent a snapshot of an asset.
-
+	A class to represent a snapshot of all the cached Assets.
+	
+	Class attributes:
+		identifiers_snapshot (dict): A dictionary where the keys are UUIDs (unique identifiers) and the values are Asset objects.
+	
 	Attributes:
 		_asset_id (str): The ID of the asset.
 		asset (Asset): The asset object.
