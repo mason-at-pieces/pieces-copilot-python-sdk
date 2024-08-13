@@ -236,7 +236,7 @@ class AssetSnapshot(StreamedIdentifiersCache):
 		self.pieces_client.assets_api.assets_delete_asset(self._asset_id)
 
 	@classmethod
-	def create_asset(cls, raw: str, metadata: Optional[FragmentMetadata] = None) -> str:
+	def create(cls, raw: str, metadata: Optional[FragmentMetadata] = None) -> str:
 		"""
 		Create a new asset.
 
