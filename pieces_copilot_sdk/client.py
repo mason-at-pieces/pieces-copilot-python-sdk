@@ -62,23 +62,7 @@ class PiecesClient:
     def get_application(self,seeded_connector_connection)-> Application:
         return self.connector_api.connect(seeded_connector_connection=seeded_connector_connection).application
 
-    @staticmethod
-    def application_to_dict(application: Application) -> dict:
-        return {
-            'id': application.id,
-            'name': application.name,
-            'version': application.version,
-            'platform': application.platform,
-            'onboarded': application.onboarded,
-            'privacy': application.privacy,
-        }
-
-    def create_conversation(self, props: dict = None) -> dict:
-        if props is None:
-            props = {}
-
-        name = props.get('name', 'New Conversation')
-        first_message = props.get('firstMessage')
+    def create_conversation(self,first_message:str, name:str="New Conversation") -> dict:
 
         try:
             new_conversation = self.conversations_api.conversations_create_specific_conversation(
@@ -103,7 +87,7 @@ class PiecesClient:
             return {'conversation': new_conversation}
         except Exception as error:
             print(f'Error creating conversation: {error}')
-            return None
+            return
 
     def get_conversation(self, conversation_id: str, include_raw_messages: bool = False) -> dict:
         conversation_messages = []
@@ -196,7 +180,7 @@ class PiecesClient:
                         # 'type': SeedTypeEnum.Asset,
                         'type': 'SEEDED_ASSET',
                         'asset': {
-                            'application': PiecesClient.application_to_dict(self.tracked_application),
+                            'application': self.tracked_application.to_dict(),
                             'format': {
                                 'fragment': {
                                     'string': {
