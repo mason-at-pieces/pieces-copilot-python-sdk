@@ -123,13 +123,6 @@ class PiecesClient:
             print(f'Error getting conversation: {error}')
             return None
 
-    def get_conversations(self) -> list:
-        try:
-            conversations = self.conversations_api.conversations_snapshot()
-            return conversations.iterable or []
-        except Exception as error:
-            print(f'Error fetching conversations: {error}')
-            return []
 
     def ask_question(self, question: str) -> str:
         try:
@@ -150,6 +143,7 @@ class PiecesClient:
         except Exception as error:
             print(f'Error asking question: {error}')
             return 'Error asking question'
+
 
     def prompt_conversation(self, message: str, conversation_id: str, regenerate_conversation_name: bool = False) -> dict:
         try:
