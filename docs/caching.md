@@ -20,7 +20,7 @@ pieces_client = PiecesClient(config={'baseUrl': 'your_base_url'})
 assets_ws = AssetsIdentifiersWS(pieces_client=pieces_client).start() # Need to connect to the websocket
 time.sleep(4) # Wait until all assets is cached 
 list(AssetSnapshot.identifiers_snapshot.values()) # return list of Asset
-list(AssetSnapshot.identifiers_snapshot.items()) # return list of str (assets ids)
+list(AssetSnapshot.identifiers_snapshot.keys()) # return list of str (assets ids)
 ```
 ### Using The assets wrapper
 The asset wrapper provide many useful functionailty 
@@ -58,6 +58,6 @@ pieces_client = PiecesClient(config={'baseUrl': 'your_base_url'})
 conversation_ws = ConversationWS(pieces_client=pieces_client).start() # Need to connect to the websocket
 time.sleep(4) # Wait until all assets is cached 
 (ConversationSnapshot.identifiers_snapshot.values()) # return list of Conversations
-list(ConversationSnapshot.identifiers_snapshot.items()) # return list of str (conversations ids)
+list(ConversationSnapshot.identifiers_snapshot.keys()) # return list of str (conversations ids)
 ```
 

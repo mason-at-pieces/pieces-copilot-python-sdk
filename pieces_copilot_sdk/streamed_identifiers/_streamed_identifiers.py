@@ -51,7 +51,7 @@ class StreamedIdentifiersCache(ABC):
         pass
 
     @abstractmethod
-    def sort_first_shot():
+    def _sort_first_shot():
         """
             Sorting algrothim in the first shot
         """

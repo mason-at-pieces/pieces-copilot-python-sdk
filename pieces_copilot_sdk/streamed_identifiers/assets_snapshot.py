@@ -200,7 +200,7 @@ class AssetSnapshot(StreamedIdentifiersCache):
 		return self.asset.name if self.asset else "Unnamed snippet"
 
 	@staticmethod
-	def sort_first_shot():
+	def _sort_first_shot():
 		"""
 		Placeholder method for sorting the first shot.
 		"""
@@ -266,3 +266,7 @@ class AssetSnapshot(StreamedIdentifiersCache):
 
 		created_asset_id = cls.pieces_client.assets_api.assets_create_new_asset(transferables=False, seed=seed).id
 		return created_asset_id
+
+	@classmethod
+	def edit_asset(cls,asset):
+		cls.pieces_client.asset_api.asset_update(False,asset)
