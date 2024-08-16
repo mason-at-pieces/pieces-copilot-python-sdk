@@ -37,5 +37,37 @@ class Basic(ABC):
 		pass
 
 	@abstractmethod
+	def name(self):
+		pass
+
+	@abstractmethod
 	def delete(self):
 		pass
+
+	def __repr__(self):
+		"""
+		Returns a detailed string representation of the object.
+		"""
+		return f"<{self.__class__.__name__}(id={self.id}, name={self.name})>"
+
+	def __eq__(self, other):
+		"""
+		Checks equality between two instances.
+		"""
+		if isinstance(other, self.__class__):
+			return self.id == other.id
+		return False
+
+	def __str__(self):
+		"""
+		Returns a user-friendly string representation of the object.
+		"""
+		return f"ID: {self.id}, Name: {self.name}"
+
+
+	def __hash__(self):
+		"""
+		Returns a hash of the instance.
+		"""
+		return hash(self.id)
+

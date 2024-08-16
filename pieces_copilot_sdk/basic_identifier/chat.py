@@ -108,3 +108,4 @@ class BasicChat(Basic):
             conversation: The conversation to edit.
         """
         ConversationsSnapshot.pieces_client.conversation_api.conversation_update(False, conversation)
+
