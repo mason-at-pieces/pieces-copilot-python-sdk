@@ -6,154 +6,103 @@ from pieces_os_client import (SeededConversation,
     QGPTQuestionInput,
     QGPTStreamOutput,
     QGPTStreamEnum)
+from pieces_copilot_sdk.basic_identifier.chat import BasicChat
+from pieces_copilot_sdk.streamed_identifiers.conversations_snapshot import ConversationsSnapshot
 from pieces_copilot_sdk.websockets import AskStreamWS
 
 
 class Copilot:
+    """
+    A class to interact with the Pieces Copilot SDK for managing conversations and streaming QGPT responses.
+    """
+
     def __init__(self, pieces_client):
+        """
+        Initializes the Copilot instance.
+
+        Args:
+            pieces_client: The client instance to interact with the Pieces API.
+        """
         self.pieces_client = pieces_client
         self.message_queue = asyncio.Queue()
         self.ask_stream_ws = AskStreamWS(self.pieces_client, self._on_stream_message)
-        self.conversation_id = None
+        self._chat = None
 
-    def _on_stream_message(self, message:QGPTStreamOutput):
+    def _on_stream_message(self, message: QGPTStreamOutput):
+        """
+        Callback function to handle incoming stream messages.
+
+        Args:
+            message (QGPTStreamOutput): The message received from the stream.
+        """
         asyncio.create_task(self.message_queue.put(message))
 
     async def ask(self,
-        query:str,
-        relevant_qgpt_seeds:RelevantQGPTSeeds=RelevantQGPTSeeds(iterable=[]),
-        conversation_id: Optional[str] = None) -> AsyncGenerator[QGPTStreamOutput, None]:
+                  query: str,
+                  relevant_qgpt_seeds: RelevantQGPTSeeds = RelevantQGPTSeeds(iterable=[]),
+                  chat_id: Optional[str] = None) -> AsyncGenerator[QGPTStreamOutput, None]:
+        """
+        Asks a question to the QGPT model and streams the responses.
+
+        Args:
+            query (str): The question to ask.
+            relevant_qgpt_seeds (RelevantQGPTSeeds): Relevant seeds for the QGPT model.
+            chat_id (Optional[str]): The ID of the chat to continue the conversation in.
+
+        Yields:
+            QGPTStreamOutput: The streamed output from the QGPT model.
+        """
+        id = self._chat.id if self._chat else None
         self.ask_stream_ws.send_message(
             QGPTStreamInput(
                 question=QGPTQuestionInput(
                     relevant=relevant_qgpt_seeds,
                     query=query,
                     application=self.pieces_client.tracked_application.id,
-                    model = self.pieces_client.model_id
+                    model=self.pieces_client.model_id
                 ),
-                conversation = conversation_id or self._conversation_id,
+                conversation=chat_id or id,
             )
         )
 
         while True:
-            message:QGPTStreamOutput = await self.message_queue.get()
-            if message.status != QGPTStreamEnum.IN_MINUS_PROGRESS: # Loop only while in progress
-              yield message
-              self._conversation_id = message.conversation # Save the conversation
-              break  
+            message: QGPTStreamOutput = await self.message_queue.get()
+            if message.status != QGPTStreamEnum.IN_MINUS_PROGRESS:  # Loop only while in progress
+                yield message
+                self.chat_id = BasicChat(message.conversation)  # Save the conversation
+                break
             yield message
 
+    def chats(self) -> list[BasicChat]:
+        """
+        Retrieves a list of all chat identifiers.
 
+        Returns:
+            list[BasicChat]: A list of BasicChat instances representing the chat identifiers.
+        """
+        return [BasicChat(id) for id in ConversationsSnapshot.identifiers_snapshot]
 
-    # def ask_question(self, question: str) -> str:
-    #     try:
-    #         answer = self.qgpt_api.question(
-    #             qgpt_question_input={
-    #                 'query': question,
-    #                 'pipeline': {
-    #                     'conversation': {
-    #                         'generalizedCodeDialog': {},
-    #                     },
-    #                 },
-    #                 'relevant': {
-    #                     'iterable': [],
-    #                 }
-    #             }
-    #         )
-    #         return answer.answers.iterable[0].text
-    #     except Exception as error:
-    #         print(f'Error asking question: {error}')
-    #         return 'Error asking question'
+    @property
+    def chat(self) -> Optional[BasicChat]:
+        """
+        Gets the current conversation being used in the copilot.
 
+        Returns:
+            Optional[BasicChat]: The current chat instance or None if no chat is set.
+        """
+        return self._chat
 
-    # def prompt_conversation(self, message: str, conversation_id: str, regenerate_conversation_name: bool = False) -> dict:
-    #     try:
-    #         conversation = self.get_conversation(
-    #             conversation_id=conversation_id,
-    #             include_raw_messages=True,
-    #         )
+    @chat.setter
+    def chat(self, chat: Optional[BasicChat]):
+        """
+        Sets the current conversation to be used in the copilot.
 
-    #         if not conversation:
-    #             return {'text': 'Conversation not found'}
+        Args:
+            chat (Optional[BasicChat]): The chat instance to set.
 
-    #         user_message = self.conversation_messages_api.messages_create_specific_message(
-    #             seeded_conversation_message={
-    #                 # 'role': QGPTConversationMessageRoleEnum.User,
-    #                 'role': 'USER',
-    #                 'fragment': {
-    #                     'string': {
-    #                         'raw': message,
-    #                     },
-    #                 },
-    #                 'conversation': {'id': conversation_id},
-    #             }
-    #         )
-
-    #         relevant_conversation_messages = [
-    #             {
-    #                 'seed': {
-    #                     # 'type': SeedTypeEnum.Asset,
-    #                     'type': 'SEEDED_ASSET',
-    #                     'asset': {
-    #                         'application': self.tracked_application.to_dict(),
-    #                         'format': {
-    #                             'fragment': {
-    #                                 'string': {
-    #                                     'raw': msg['message'],
-    #                                 },
-    #                             },
-    #                         },
-    #                     },
-    #                 }
-    #             }
-    #             for msg in (conversation.get('raw_messages') or [])
-    #         ]
-
-    #         answer = self.qgpt_api.question(
-    #             qgpt_question_input={
-    #                 'query': message,
-    #                 'pipeline': {
-    #                     'conversation': {
-    #                         'contextualizedCodeDialog': {},
-    #                     },
-    #                 },
-    #                 'relevant': {
-    #                     'iterable': relevant_conversation_messages,
-    #                 },
-    #             }
-    #         )
-
-    #         bot_message = self.conversation_messages_api.messages_create_specific_message(
-    #             seeded_conversation_message={
-    #                 # 'role': QGPTConversationMessageRoleEnum.Assistant,
-    #                 'role': 'ASSISTANT',
-    #                 'fragment': {
-    #                     'string': {
-    #                         'raw': answer.answers.iterable[0].text,
-    #                     },
-    #                 },
-    #                 'conversation': {'id': conversation_id},
-    #             }
-    #         )
-
-    #         if regenerate_conversation_name:
-    #             self.update_conversation_name(conversation_id=conversation_id)
-
-    #         return {
-    #             'text': answer.answers.iterable[0].text,
-    #             'user_message_id': user_message.id,
-    #             'bot_message_id': bot_message.id,
-    #         }
-    #     except Exception as error:
-    #         print(f'Error prompting conversation: {error}')
-    #         return {'text': 'Error asking question'}
-
-    # def update_conversation_name(self, conversation_id: str) -> str:
-    #     try:
-    #         conversation = self.conversation_api.conversation_specific_conversation_rename(
-    #             conversation=conversation_id,
-    #         )
-    #         return conversation.name
-    #     except Exception as error:
-    #         print(f'Error updating conversation name: {error}')
-    #         return 'Error updating conversation name'
+        Raises:
+            ValueError: If the provided chat is not a valid BasicChat instance.
+        """
+        if not (chat is None or isinstance(chat, BasicChat)):
+            raise ValueError("Not a valid chat")
+        self._chat = chat
