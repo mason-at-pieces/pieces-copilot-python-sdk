@@ -1,10 +1,10 @@
 from typing import Literal, Optional,TYPE_CHECKING
-from pieces_os_client.models.conversation_message import ConversationMessage
-
+from pieces_os_client import ConversationMessage,Annotations
+from .basic import Basic
 if TYPE_CHECKING:
     from ..client import PiecesClient
 
-class BasicMessage:
+class BasicMessage(Basic):
     """
     A class to represent a basic message in the Pieces client.
 
@@ -107,3 +107,12 @@ class BasicMessage:
         self.pieces_client.conversation_messages_api.messages_delete_specific_message(
             self.message.id
         )
+
+    @property
+    def annotations(self) -> Optional[Annotations]:
+        out = []
+        if self.message.annotations:
+            for referenced_annotation in self.message.annotations.iterable:
+                out.append(self.pieces_client.annotation_api.annotation_specific_annotation_snapshot(referenced_annotation.id))
+            return Annotations(iterable=out)
+

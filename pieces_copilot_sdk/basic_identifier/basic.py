@@ -1,7 +1,6 @@
 from abc import ABC,abstractmethod
 from typing import  Optional
-from pieces_os_client import Annotations
-
+from pieces_os_client import Annotations, AnnotationTypeEnum
 class Basic(ABC):
 	@property
 	def description(self):
@@ -13,10 +12,9 @@ class Basic(ABC):
 		annotations = self.annotations
 		if not annotations:
 			return
-		annotations = sorted(annotations, key=lambda x: x.updated.value, reverse=True)
 		d = None
-		for annotation in annotations:
-			if annotation.type == "DESCRIPTION":
+		for annotation in annotations.iterable:
+			if annotation.type == AnnotationTypeEnum.DESCRIPTION:
 				d = annotation
 		
 		return d.text if d else None
@@ -32,12 +30,9 @@ class Basic(ABC):
 		"""
 		pass
 
+	@property
 	@abstractmethod
 	def id(self):
-		pass
-
-	@abstractmethod
-	def name(self):
 		pass
 
 	@abstractmethod
@@ -48,7 +43,7 @@ class Basic(ABC):
 		"""
 		Returns a detailed string representation of the object.
 		"""
-		return f"<{self.__class__.__name__}(id={self.id}, name={self.name})>"
+		return f"<{self.__class__.__name__}(id={self.id})>"
 
 	def __eq__(self, other):
 		"""
@@ -62,7 +57,9 @@ class Basic(ABC):
 		"""
 		Returns a user-friendly string representation of the object.
 		"""
-		return f"ID: {self.id}, Name: {self.name}"
+		if hasattr(self,"name"):
+			return f"ID: {self.id}, Name: {self.name}"
+		return f"ID: {self.id}"
 
 
 	def __hash__(self):

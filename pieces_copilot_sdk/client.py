@@ -15,7 +15,8 @@ from pieces_os_client import (
     AssetApi,
     AssetsApi,
     FragmentMetadata,
-    ModelsApi
+    ModelsApi,
+    AnnotationApi
 )
 from typing import Optional,Dict
 import platform
@@ -47,6 +48,7 @@ class PiecesClient:
         self.format_api = FormatApi(self.api_client)
         self.connector_api = ConnectorApi(self.api_client)
         self.models_api = ModelsApi(self.api_client)
+        self.annotation_api = AnnotationApi(self.api_client)
 
         # Websocket urls
         if 'http' not in self.host:
