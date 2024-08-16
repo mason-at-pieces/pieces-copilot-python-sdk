@@ -36,7 +36,7 @@ asset = client.asset(asset_id)
 print(f"Fetched asset with ID: {asset.id}")
 ```
 
-### [Copilot](./basic_copilot.md)
+### [Copilot](./copilot.md)
 
 ```python
 copilot = client.copilot
