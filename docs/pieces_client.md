@@ -2,7 +2,7 @@
 ## Snippets ([BasicAsset](./basic_asset.md))
 ### Creating a Snippet
 - Create a snippet 
-- returns: [BasicAsset](./basic_asset.md))
+- returns: [BasicAsset](./basic_asset.md)
 
 ```python
 from pieces_os_client import FragmentMetadata
@@ -18,7 +18,7 @@ print(f"Created asset with ID: {new_asset.id}")
 
 ### Fetching All Snippets
 - Fetch all snippets
-- returns: list of [BasicAsset](./basic_asset.md))
+- returns: list of [BasicAsset](./basic_asset.md)
 
 ```python
 assets = client.assets()
@@ -28,7 +28,7 @@ for asset in assets:
 
 ### Fetching a Specific Asset
 - Fetch specific snippet
-- returns: [BasicAsset](./basic_asset.md))
+- returns: [BasicAsset](./basic_asset.md)
 
 ```python
 asset_id = "some-asset-id"
