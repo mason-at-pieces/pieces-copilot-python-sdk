@@ -1,6 +1,25 @@
 from .streamed_identifiers.assets_snapshot import AssetSnapshot
+from pieces_os_client import (
+	Asset, 
+	AssetsApi,
+	AssetApi,
+	ClassificationSpecificEnum,
+	FormatApi,
+	ClassificationGenericEnum,
+	Annotation,
+	Format,
+	Classification,
+	Annotations,
+	SeededAsset,
+	Seed,
+	SeededFormat,
+	SeededFragment,
+	TransferableString,
+	FragmentMetadata)
 
-# Friendly wrapper (to avoid interacting with the pieces_os_client models)
+from typing import Optional
+
+# Friendly wrapper (to avoid interacting with the pieces_os_client sdks models)
 
 class BasicAsset:
 	"""
@@ -13,34 +32,82 @@ class BasicAsset:
 
 		:param asset_id: The ID of the asset.
 		"""
-		self.asset_wrapper = AssetSnapshot(asset_id)
+		self._asset_id = asset_id
+		self.asset:Asset = AssetSnapshot.identifiers_snapshot.get(asset_id)
+		if not self.asset:
+			raise ValueError("Asset not found")
+
 
 	@property
-	def raw(self):
+	def raw(self) -> Optional[str]:
 		"""
-		Retrieve the raw data of the asset.
+		Get the raw content of the asset.
 
-		:return: The raw data of the asset.
-		"""
-		return self.asset_wrapper.get_asset_raw()
+		Returns:
+			Optional[str]: The raw content if available, otherwise None.
 
-	def classification(self):
+		Raises:
+			ValueError: If unable to get OCR content for an image.
 		"""
-		Retrieve the classification of the asset.
+		if self.is_image():
+			content = self._get_ocr_content()
+			if content is None:
+				raise ValueError('Unable to get OCR content')
+			return content
+		else:
+			return (
+				self.asset.original.reference.fragment.string.raw or
+				self.asset.preview.base.reference.fragment.string.raw or
+				''
+			)
+
+	def is_image(self) -> bool:
+		"""
+		Check if the asset is an image.
+
+		Returns:
+			bool: True if the asset is an image, otherwise False.
+		"""
+		return (
+			self.asset.original.reference.classification.generic ==
+			ClassificationGenericEnum.Image
+		)
+
+
+	@property
+	def classification(self) -> Optional[str]:
+		"""
+		Get the specific classification of the asset (eg: py).
 
 		:return: The classification value of the asset, or None if not available.
 		"""
-		c = self.asset_wrapper.original_classification_specific()
+		c = self.asset.original.reference.classification.specific
 		return c.value if c else None
 
 	def edit_content(self, content: str):
 		"""
-		Edit the content of the asset.
+		Edit the original format of the asset.
 
-		:param content: The new content to be set for the asset.
-		:return: None.
+		Args:
+			data: The new data to be set.
+
+		Raises:
+			AttributeError: If the asset is not found.
+			NotImplemented: If the asset is an image.
 		"""
-		self.asset_wrapper.edit_asset_original_format(content)
+		if not self.asset:
+			raise AttributeError("Asset not found")
+		format_api = AssetSnapshot.pieces_client.format_api
+		original = format_api.format_snapshot(self.asset.original.id, transferable=True)
+		if original.classification.generic == ClassificationGenericEnum.IMAGE:
+			raise NotImplemented("Can't edit an image yet")
+
+		if original.fragment.string.raw:
+			original.fragment.string.raw = data
+		elif original.file.string.raw:
+			original.file.string.raw = data
+		format_api.format_update_value(transferable=False, format=original)
+
 
 	def edit_name(self, name: str):
 		"""
@@ -49,8 +116,19 @@ class BasicAsset:
 		:param name: The new name to be set for the asset.
 		:return: None.
 		"""
-		self.asset_wrapper.asset.name = name
-		self.asset_wrapper.edit_asset(self.asset_wrapper.asset)
+		self.asset.name = name
+		self._edit_asset(self.asset)
+
+
+	@property
+	def name(self) -> Optional[str]:
+		"""
+		Get the name of the asset.
+
+		Returns:
+			Optional[str]: The name of the asset if available, otherwise "Unnamed snippet".
+		"""
+		return self.asset.name if self.asset.name else "Unnamed snippet"
 
 	@property
 	def description(self):
@@ -59,20 +137,111 @@ class BasicAsset:
 
 		:return: The description text of the asset, or None if not available.
 		"""
-		d = self.asset_wrapper.get_description()
+		annotations = self.annotations
+		if not annotations:
+			return
+		annotations = sorted(annotations, key=lambda x: x.updated.value, reverse=True)
+		d = None
+		for annotation in annotations:
+			if annotation.type == "DESCRIPTION":
+				d = annotation
+		
 		return d.text if d else None
+
+
+	@property
+	def annotations(self) -> Optional[Annotations]:
+		"""
+		Get all annotations of the asset.
+
+		Returns:
+			Optional[Annotations]: The annotations if available, otherwise None.
+		"""
+		return getattr(self.asset.annotations,"iterable",None)
+
 
 	def delete(self):
 		"""
 		Delete the asset.
 		"""
-		self.asset_wrapper.delete()
+		AssetSnapshot.pieces_client.assets_api.assets_delete_asset(self._asset_id)
 
-	@property
-	def name(self):
-		"""
-		Retrieve the name of the asset.
 
-		:return: The name of the asset.
+	def _get_ocr_content(self) -> Optional[str]:
 		"""
-		return self.asset_wrapper.name
+		Get the OCR content of the asset.
+
+		Returns:
+			Optional[str]: The OCR content if available, otherwise None.
+		"""
+		if not self.asset:
+			return
+		format = self._get_ocr_format(self.asset)
+		if format is None:
+			return
+		return self._ocr_from_format(format)
+
+	@staticmethod
+	def _get_ocr_format(src: Asset) -> Optional[Format]:
+		"""
+		Get the OCR format of the asset.
+
+		Args:
+			src (Asset): The asset object.
+
+		Returns:
+			Optional[Format]: The OCR format if available, otherwise None.
+		"""
+		image_id = src.original.reference.analysis.image.ocr.raw.id if src.original and src.original.reference and src.original.reference.analysis and src.original.reference.analysis.image and src.original.reference.analysis.image.ocr and src.original.reference.analysis.image.ocr.raw and src.original.reference.analysis.image.ocr.raw.id else None
+		if image_id is None:
+			return None
+		return next((element for element in src.formats.iterable if element.id == image_id), None)
+
+	@staticmethod
+	def _ocr_from_format(src: Optional[Format]) -> Optional[str]:
+		"""
+		Extract OCR content from the format.
+
+		Args:
+			src (Optional[Format]): The format object.
+
+		Returns:
+			Optional[str]: The OCR content if available, otherwise None.
+		"""
+		if src is None:
+			return None
+		return src.file.bytes.raw.decode('utf-8')
+
+	@staticmethod
+	def _edit_asset(asset):
+		AssetSnapshot.pieces_client.asset_api.asset_update(False,asset)
+
+	@staticmethod
+	def create(raw: str, metadata: Optional[FragmentMetadata] = None) -> str:
+		"""
+		Create a new asset.
+
+		Args:
+			raw (str): The raw content of the asset.
+			metadata (Optional[FragmentMetadata]): The metadata of the asset.
+
+		Returns:
+			str: The ID of the created asset.
+		"""
+		seed = Seed(
+			asset=SeededAsset(
+				application=AssetSnapshot.pieces_client.tracked_application,
+				format=SeededFormat(
+					fragment=SeededFragment(
+						string=TransferableString(raw=raw),
+						metadata=metadata
+					)
+				),
+				metadata=None
+			),
+			type="SEEDED_ASSET"
+		)
+
+		created_asset_id = AssetSnapshot.pieces_client.assets_api.assets_create_new_asset(transferables=False, seed=seed).id
+		return created_asset_id
+
