@@ -89,9 +89,9 @@ class PiecesClient:
 
     @staticmethod
     def create_asset(content:str,metadata:Optional[FragmentMetadata]=None):
-        return BasicAsset(AssetSnapshot.create(content,metadata))
+        return BasicAsset.create(content,metadata)
 
-    def get_user_profile_picture(self) -> str:
+    def get_user_profile_picture(self) -> Optional[str]:
         try:
             user_res = self.user_api.user_snapshot()
             return user_res.user.picture or None
