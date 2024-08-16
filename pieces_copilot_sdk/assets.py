@@ -2,14 +2,14 @@ from .streamed_identifiers.assets_snapshot import AssetSnapshot
 
 # Friendly wrapper (to avoid interacting with the pieces_os_client models)
 
-class AssetWrapper:
+class BasicAsset:
 	"""
 	A wrapper class for managing assets.
 	"""
 
 	def __init__(self, asset_id) -> None:
 		"""
-		Initialize the AssetWrapper with a given asset ID.
+		Initialize the BasicAsset with a given asset ID.
 
 		:param asset_id: The ID of the asset.
 		"""
