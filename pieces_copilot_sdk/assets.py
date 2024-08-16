@@ -49,7 +49,7 @@ class BasicAsset:
 		Raises:
 			ValueError: If unable to get OCR content for an image.
 		"""
-		if self.is_image():
+		if self.is_image:
 			content = self._get_ocr_content()
 			if content is None:
 				raise ValueError('Unable to get OCR content')
@@ -61,6 +61,7 @@ class BasicAsset:
 				''
 			)
 
+	@property
 	def is_image(self) -> bool:
 		"""
 		Check if the asset is an image.
