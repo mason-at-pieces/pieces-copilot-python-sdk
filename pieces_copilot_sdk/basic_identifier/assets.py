@@ -33,7 +33,6 @@ class BasicAsset(Basic):
 
 		:param asset_id: The ID of the asset.
 		"""
-		self._asset_id = asset_id
 		self.asset:Asset = AssetSnapshot.identifiers_snapshot.get(asset_id)
 		if not self.asset:
 			raise ValueError("Asset not found")
@@ -67,6 +66,27 @@ class BasicAsset(Basic):
 				self.asset.preview.base.reference.fragment.string.raw or
 				''
 			)
+	@raw.setter
+	def raw(self, content: str):
+		"""
+		Edit the original format of the asset.
+
+		Args:
+			data: The new data to be set.
+
+		Raises:
+			NotImplemented: If the asset is an image.
+		"""
+		format_api = AssetSnapshot.pieces_client.format_api
+		original = format_api.format_snapshot(self.asset.original.id, transferable=True)
+		if original.classification.generic == ClassificationGenericEnum.IMAGE:
+			raise NotImplemented("Can't edit an image yet")
+
+		if original.fragment.string.raw:
+			original.fragment.string.raw = data
+		elif original.file.string.raw:
+			original.file.string.raw = data
+		format_api.format_update_value(transferable=False, format=original)
 
 	@property
 	def is_image(self) -> bool:
@@ -91,29 +111,6 @@ class BasicAsset(Basic):
 		"""
 		return self.asset.original.reference.classification.specific
 
-	def edit_content(self, content: str):
-		"""
-		Edit the original format of the asset.
-
-		Args:
-			data: The new data to be set.
-
-		Raises:
-			AttributeError: If the asset is not found.
-			NotImplemented: If the asset is an image.
-		"""
-		if not self.asset:
-			raise AttributeError("Asset not found")
-		format_api = AssetSnapshot.pieces_client.format_api
-		original = format_api.format_snapshot(self.asset.original.id, transferable=True)
-		if original.classification.generic == ClassificationGenericEnum.IMAGE:
-			raise NotImplemented("Can't edit an image yet")
-
-		if original.fragment.string.raw:
-			original.fragment.string.raw = data
-		elif original.file.string.raw:
-			original.file.string.raw = data
-		format_api.format_update_value(transferable=False, format=original)
 
 	@property
 	def name(self) -> str:

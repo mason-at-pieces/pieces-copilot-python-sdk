@@ -37,9 +37,5 @@ class Basic(ABC):
 		pass
 
 	@abstractmethod
-	def name(self):
-		pass
-
-	@abstractmethod
 	def delete(self):
 		pass

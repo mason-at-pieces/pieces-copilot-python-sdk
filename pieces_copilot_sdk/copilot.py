@@ -44,40 +44,6 @@ class Copilot:
             yield message
 
 
-    # def get_conversation(self, conversation_id: str, include_raw_messages: bool = False) -> dict:
-    #     conversation_messages = []
-
-    #     try:
-    #         conversation = self.conversation_api.conversation_get_specific_conversation(
-    #             conversation=conversation_id,
-    #         )
-
-    #         if not include_raw_messages:
-    #             return conversation.__dict__
-
-    #         for message_id, index in (conversation.messages.indices or {}).items():
-    #             message_response = self.conversation_message_api.message_specific_message_snapshot(
-    #                 message=message_id,
-    #             )
-
-    #             if (not message_response.fragment or
-    #                     not message_response.fragment.string or
-    #                     not message_response.fragment.string.raw):
-    #                 continue
-
-    #             conversation_messages.append({
-    #                 'message': message_response.fragment.string.raw,
-    #                 'is_user_message': message_response.role == 'USER',
-    #             })
-
-    #         return {
-    #             **conversation.__dict__,
-    #             'raw_messages': conversation_messages,
-    #         }
-    #     except Exception as error:
-    #         print(f'Error getting conversation: {error}')
-    #         return None
-
 
     # def ask_question(self, question: str) -> str:
     #     try:

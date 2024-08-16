@@ -1,7 +1,8 @@
 from pieces_os_client.models.conversation import Conversation
 from ..streamed_identifiers import ConversationsSnapshot
-from typing import Optional
+from typing import Optional,List
 from .basic import Basic
+from .message import BasicMessage
 
 class BasicChat(Basic):
 	def __init__(self,conversation_id) -> None:
@@ -10,6 +11,7 @@ class BasicChat(Basic):
 
 		:param conversation_id: The ID of the asset.
 		"""
+
 		self._conversation_id = conversation_id
 		self.conversation:Conversation = ConversationsSnapshot.identifiers_snapshot.get(conversation_id)
 		if not self.conversation:
@@ -28,19 +30,18 @@ class BasicChat(Basic):
 		self.conversation.name = name
 		self._edit_conversation(self.conversation)
 
-	def messages(self) -> List[]:
+	def messages(self) -> List[BasicMessage]:
+		out = []
 		for message_id, index in (self.conversation.messages.indices or {}).items():
 			message_response = self._get_message(message_id)
-
-			if (not message_response.fragment or
-					not message_response.fragment.string or
-					not message_response.fragment.string.raw):
+			if index == -1: # Deleted message
 				continue
-
+			out.append(BasicMessage(message_response))
+		return out
 
 	@staticmethod
 	def _get_message(message_id):
-		message = ConversationsSnapshot.pieces_client.conversation_message_api.message_specific_message_snapshot(message=message_id,transferables=True)
+		return ConversationsSnapshot.pieces_client.conversation_message_api.message_specific_message_snapshot(message=message_id,transferables=True)
 		
 
 	@property
@@ -54,4 +55,5 @@ class BasicChat(Basic):
 	def _edit_conversation(conversation):
 		ConversationsSnapshot.pieces_client.conversation_api.conversation_update(False,conversation)
 
-	
+
+
