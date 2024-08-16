@@ -11,8 +11,6 @@ class BasicChat(Basic):
 
 		:param conversation_id: The ID of the asset.
 		"""
-
-		self._conversation_id = conversation_id
 		self.conversation:Conversation = ConversationsSnapshot.identifiers_snapshot.get(conversation_id)
 		if not self.conversation:
 			raise ValueError("Conversation not found")
@@ -41,7 +39,7 @@ class BasicChat(Basic):
 
 	@staticmethod
 	def _get_message(message_id):
-		return ConversationsSnapshot.pieces_client.conversation_message_api.message_specific_message_snapshot(message=message_id,transferables=True)
+		return 
 		
 
 	@property
