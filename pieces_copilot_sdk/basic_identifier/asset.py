@@ -110,6 +110,10 @@ class BasicAsset(Basic):
 
 		:return: The classification value of the asset, or None if not available.
 		"""
+		if self.is_image:
+			ocr_format = self._get_ocr_format(self.asset)
+			if ocr_format:
+				return ocr_format.classification.specific
 		return self.asset.original.reference.classification.specific
 
 	@classification.setter
