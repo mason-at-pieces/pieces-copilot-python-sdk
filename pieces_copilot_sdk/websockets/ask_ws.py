@@ -1,10 +1,11 @@
 from pieces_os_client import QGPTStreamOutput, QGPTStreamInput
 from websocket import WebSocketConnectionClosedException, WebSocketApp
+from typing import Callable, Optional,TYPE_CHECKING
 
 from .base_websocket import BaseWebsocket
-from ..client import PiecesClient
 
-from typing import Callable, Optional
+if TYPE_CHECKING:
+	from ..client import PiecesClient
 
 class AskStreamWS(BaseWebsocket):
 	"""
@@ -17,7 +18,7 @@ class AskStreamWS(BaseWebsocket):
 		on_error (Optional[Callable[[WebSocketApp, Exception], None]]): Optional callback function to handle errors.
 		on_close (Optional[Callable[[WebSocketApp], None]]): Optional callback function to handle WebSocket closing.
 	"""
-	def __init__(self, pieces_client: PiecesClient,
+	def __init__(self, pieces_client: "PiecesClient",
 				 on_message_callback: Callable[[QGPTStreamOutput], None], 
 				 on_open_callback: Optional[Callable[[WebSocketApp], None]] = None, 
 				 on_error: Optional[Callable[[WebSocketApp, Exception], None]] = None, 

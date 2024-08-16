@@ -2,11 +2,13 @@ from pieces_os_client import StreamedIdentifiers, Conversation
 from .base_websocket import BaseWebsocket
 from ..streamed_identifiers import ConversationsSnapshot
 from websocket import WebSocketApp
-from typing import Optional, Callable
-from ..client import PiecesClient
+from typing import Optional, Callable,TYPE_CHECKING
+
+if TYPE_CHECKING:
+	from ..client import PiecesClient
 
 class ConversationWS(BaseWebsocket):
-	def __init__(self, pieces_client: PiecesClient, 
+	def __init__(self, pieces_client: "PiecesClient", 
 				 on_conversation_update: Optional[Callable[[Conversation], None]] = None,
 				 on_conversation_remove: Optional[Callable[[Conversation], None]] = None,
 				 on_open_callback: Optional[Callable[[WebSocketApp], None]] = None, 

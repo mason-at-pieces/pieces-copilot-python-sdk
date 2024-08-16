@@ -1,8 +1,8 @@
-from typing import Literal, Optional
+from typing import Literal, Optional,TYPE_CHECKING
 from pieces_os_client.models.conversation_message import ConversationMessage
 
-from ..client import PiecesClient
-
+if TYPE_CHECKING:
+    from ..client import PiecesClient
 
 class BasicMessage:
     """
@@ -27,7 +27,7 @@ class BasicMessage:
         Deletes the message.
     """
 
-    def __init__(self, pieces_client: PiecesClient, message_id: str) -> None:
+    def __init__(self, pieces_client:"PiecesClient", message_id: str) -> None:
         """
         Constructs all the necessary attributes for the BasicMessage object.
 
@@ -39,7 +39,7 @@ class BasicMessage:
             The ID of the message to be retrieved.
         """
         try:
-            self.message = pieces_client.conversation_message_api.message_specific_message_snapshot(
+            self.message:ConversationMessage = pieces_client.conversation_message_api.message_specific_message_snapshot(
                 message=message_id, transferables=True
             )
         except:

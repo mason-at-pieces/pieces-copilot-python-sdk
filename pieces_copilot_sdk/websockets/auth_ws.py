@@ -1,9 +1,11 @@
 from .base_websocket import BaseWebsocket
 from pieces_os_client import UserProfile
 import json
-from ..client import PiecesClient
-from typing import Callable, Optional
+from typing import Callable, Optional,TYPE_CHECKING
 from websocket import WebSocketApp
+
+if TYPE_CHECKING:
+	from ..client import PiecesClient
 
 class AuthWS(BaseWebsocket):
 	"""
@@ -18,7 +20,7 @@ class AuthWS(BaseWebsocket):
 	"""
 
 	def __init__(self, 
-				 pieces_client: PiecesClient, 
+				 pieces_client: "PiecesClient", 
 				 on_message_callback: Callable[[Optional[UserProfile]], None],
 				 on_open_callback: Optional[Callable[[WebSocketApp], None]] = None, 
 				 on_error: Optional[Callable[[WebSocketApp, Exception], None]] = None, 

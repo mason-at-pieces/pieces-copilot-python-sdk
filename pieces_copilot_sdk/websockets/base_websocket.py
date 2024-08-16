@@ -1,10 +1,11 @@
-from typing import Callable, Optional
-
-from ..client import PiecesClient
+from typing import Callable, Optional,TYPE_CHECKING
 from typing_extensions import Self
 import websocket
 import threading
 from abc import ABC, abstractmethod
+
+if TYPE_CHECKING:
+	from ..client import PiecesClient
 
 class BaseWebsocket(ABC):
 	instances = []
@@ -18,7 +19,7 @@ class BaseWebsocket(ABC):
 		return cls.instance
 
 	def __init__(self,
-				 pieces_client: PiecesClient,
+				 pieces_client: "PiecesClient",
 				 on_message_callback: Callable[[str], None],
 				 on_open_callback: Optional[Callable[[websocket.WebSocketApp], None]] = None,
 				 on_error: Optional[Callable[[websocket.WebSocketApp, Exception], None]] = None,
