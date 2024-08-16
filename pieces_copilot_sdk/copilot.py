@@ -39,8 +39,7 @@ class Copilot:
 
     async def ask(self,
                   query: str,
-                  relevant_qgpt_seeds: RelevantQGPTSeeds = RelevantQGPTSeeds(iterable=[]),
-                  chat_id: Optional[str] = None) -> AsyncGenerator[QGPTStreamOutput, None]:
+                  relevant_qgpt_seeds: RelevantQGPTSeeds = RelevantQGPTSeeds(iterable=[])) -> AsyncGenerator[QGPTStreamOutput, None]:
         """
         Asks a question to the QGPT model and streams the responses.
 
@@ -61,7 +60,7 @@ class Copilot:
                     application=self.pieces_client.tracked_application.id,
                     model=self.pieces_client.model_id
                 ),
-                conversation=chat_id or id,
+                conversation=id,
             )
         )
 

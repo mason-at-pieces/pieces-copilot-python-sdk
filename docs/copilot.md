@@ -8,7 +8,7 @@ Asks a question to the QGPT model and streams the responses.
 **Args:**
 - `query` (str): The question to ask.
 - `relevant_qgpt_seeds` ([RelevantQGPTSeeds](https://docs.pieces.app/build/reference/python/models/RelevantQGPTSeeds)): Sets the conversation context.
-- `chat_id` (Optional[str]): The ID of the chat to continue the conversation in.
+
 
 **Yields:**
 - `QGPTStreamOutput`: The streamed output from the QGPT model.
