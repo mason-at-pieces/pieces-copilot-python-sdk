@@ -1,22 +1,26 @@
-from typing import Optional, AsyncGenerator
+from typing import TYPE_CHECKING, Optional, AsyncGenerator
 import asyncio
 from pieces_os_client import (SeededConversation,
     QGPTStreamInput,
     RelevantQGPTSeeds,
     QGPTQuestionInput,
     QGPTStreamOutput,
-    QGPTStreamEnum)
-from pieces_copilot_sdk.basic_identifier.chat import BasicChat
-from pieces_copilot_sdk.streamed_identifiers.conversations_snapshot import ConversationsSnapshot
-from pieces_copilot_sdk.websockets import AskStreamWS
+    QGPTStreamEnum,
+    QGPTQuestionOutput)
+from .basic_identifier.chat import BasicChat
+from .streamed_identifiers.conversations_snapshot import ConversationsSnapshot
+from .websockets import AskStreamWS
 
+
+if TYPE_CHECKING:
+    from .client import PiecesClient
 
 class Copilot:
     """
     A class to interact with the Pieces Copilot SDK for managing conversations and streaming QGPT responses.
     """
 
-    def __init__(self, pieces_client):
+    def __init__(self, pieces_client:"PiecesClient"):
         """
         Initializes the Copilot instance.
 
@@ -39,7 +43,8 @@ class Copilot:
 
     async def ask(self,
                   query: str,
-                  relevant_qgpt_seeds: RelevantQGPTSeeds = RelevantQGPTSeeds(iterable=[])) -> AsyncGenerator[QGPTStreamOutput, None]:
+                  relevant_qgpt_seeds: RelevantQGPTSeeds = RelevantQGPTSeeds(iterable=[])
+        ) -> AsyncGenerator[QGPTStreamOutput, None]:
         """
         Asks a question to the QGPT model and streams the responses.
 
@@ -71,6 +76,19 @@ class Copilot:
                 self.chat_id = BasicChat(message.conversation)  # Save the conversation
                 break
             yield message
+
+    def question(self,
+        query:str, 
+        relevant_qgpt_seeds: RelevantQGPTSeeds = RelevantQGPTSeeds(iterable=[])
+        ) -> QGPTQuestionOutput:
+        gpt_input = QGPTQuestionInput(
+            query = query,
+            model = self.pieces_client.model_id,
+            application = self.pieces_client.tracked_application.id,
+            relevant = relevant_qgpt_seeds
+        )
+
+        return self.pieces_client.qgpt_api.question(gpt_input)
 
     def chats(self) -> list[BasicChat]:
         """
