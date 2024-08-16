@@ -35,7 +35,7 @@ Retrieves a list of all chat identifiers.
 ```python
 chat_list = copilot.chats()
 for chat in chat_list:
-    print(f"Chat ID: {chat.id()}, Chat Name: {chat.name()}")
+    print(f"Chat ID: {chat.id}, Chat Name: {chat.name}")
 ```
 
 ### Property: `chat` (Getter)
@@ -49,7 +49,7 @@ Gets the current conversation being used in the copilot.
 ```python
 current_chat = copilot.chat
 if current_chat:
-    print(f"Current Chat ID: {current_chat.id()}")
+    print(f"Current Chat ID: {current_chat.id}")
 else:
     print("No chat is currently set.")
 ```
