@@ -19,9 +19,9 @@ from pieces_os_client import (
 )
 from typing import Optional,Dict
 import platform
+import atexit
 
 from .copilot import Copilot
-
 from .basic_identifier import BasicAsset
 from .streamed_identifiers import AssetSnapshot
 from .websockets import *
@@ -126,3 +126,8 @@ class PiecesClient:
     @property
     def copilot(self):
         return Copilot(self)
+
+
+# Register the function to be called on exit
+atexit.register(BaseWebsocket.close_all)
+
