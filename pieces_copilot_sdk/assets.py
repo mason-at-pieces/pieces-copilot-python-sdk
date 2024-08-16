@@ -108,20 +108,8 @@ class BasicAsset:
 			original.file.string.raw = data
 		format_api.format_update_value(transferable=False, format=original)
 
-
-	def edit_name(self, name: str):
-		"""
-		Edit the name of the asset.
-
-		:param name: The new name to be set for the asset.
-		:return: None.
-		"""
-		self.asset.name = name
-		self._edit_asset(self.asset)
-
-
 	@property
-	def name(self) -> Optional[str]:
+	def name(self) -> str:
 		"""
 		Get the name of the asset.
 
@@ -129,6 +117,16 @@ class BasicAsset:
 			Optional[str]: The name of the asset if available, otherwise "Unnamed snippet".
 		"""
 		return self.asset.name if self.asset.name else "Unnamed snippet"
+	
+	@name.setter
+	def name(self, name: str):
+		"""
+		Edit the name of the asset.
+
+		:param name: The new name to be set for the asset.
+		"""
+		self.asset.name = name
+		self._edit_asset(self.asset)
 
 	@property
 	def description(self):
