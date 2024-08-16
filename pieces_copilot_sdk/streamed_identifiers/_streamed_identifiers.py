@@ -46,6 +46,7 @@ class StreamedIdentifiersCache(ABC):
         cls.identifiers_set = set()  # Set for ids in the queue
         cls.block = True  # to wait for the queue to receive the first id
         cls.first_shot = True  # First time to open the websocket or not
+        cls._worker_thread = threading.Thread(target=cls.worker)
 
     @classmethod
     def on_update(cls,obj):
@@ -99,7 +100,9 @@ class StreamedIdentifiersCache(ABC):
     def streamed_identifiers_callback(cls, ids: StreamedIdentifiers):
         # Start the worker thread if it's not running
         cls.block = True
-        threading.Thread(target=cls.worker).start()
+        if not cls._worker_thread.is_alive():
+            cls._worker_thread.start()
+        
         for item in ids.iterable:
             reference_id = item.asset.id if item.asset else item.conversation.id  # Get either the conversation or the asset
 
