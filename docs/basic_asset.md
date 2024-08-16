@@ -86,7 +86,8 @@ Create a new asset.
 
 ```python
 from pieces_copilot_sdk import PiecesClient
-from pieces_os_client import ClassificationEnum
+from pieces_copilot_sdk.basic_identifier import BasicAsset
+from pieces_os_client import ClassificationSpecificEnum
 
 # Replace 'your_base_url' with your actual base URL
 pieces_client = PiecesClient(config={'baseUrl': 'your_base_url'})
@@ -118,7 +119,7 @@ print(f"Updated Content: {asset.raw}")
 classification = asset.classification.value if asset.classification else "None"
 print(f"Asset Classification: {classification}")
 
-asset.classification = ClassificationEnum.SH # Reclassify to shell
+asset.classification = ClassificationSpecificEnum.SH # Reclassify to shell
 print(f"New Classification: {classification}")
 
 # Get the asset description
