@@ -6,12 +6,11 @@ from pieces_os_client import (SeededConversation,
     QGPTQuestionInput,
     QGPTStreamOutput,
     QGPTStreamEnum)
-from pieces_copilot_sdk.client import PiecesClient
 from pieces_copilot_sdk.websockets import AskStreamWS
 
 
 class Copilot:
-    def __init__(self, pieces_client:PiecesClient):
+    def __init__(self, pieces_client):
         self.pieces_client = pieces_client
         self.message_queue = asyncio.Queue()
         self.ask_stream_ws = AskStreamWS(self.pieces_client, self.on_stream_message)
