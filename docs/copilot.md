@@ -1,6 +1,4 @@
 # Copilot
-Certainly! Here is the refactored documentation for the methods and properties of the `Copilot` class:
-
 ### Method: `ask`
 
 Asks a question to the QGPT model and streams the responses.
