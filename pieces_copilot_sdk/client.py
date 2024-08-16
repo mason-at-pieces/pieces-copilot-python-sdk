@@ -120,5 +120,9 @@ class PiecesClient:
         self.model_id = models[model]
 
     @property
+    def available_models_names(self) -> list:
+        return list(self.get_models().keys())
+
+    @property
     def copilot(self):
         return Copilot(self)
