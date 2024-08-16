@@ -40,12 +40,15 @@ Get the specific classification of the asset (e.g., `py`).
 
 **Returns**: The classification value of the asset, or `None` if not available.
 
+### `classification` setter
 
-### `name`
+Reclassify an asset
+
+
+### `name` setter
 
 Edit the name of the asset.
 
-**Args**:
 - `name`: The new name to be set for the asset.
 
 
@@ -83,6 +86,7 @@ Create a new asset.
 
 ```python
 from pieces_copilot_sdk import PiecesClient
+from pieces_os_client import ClassificationEnum
 
 # Replace 'your_base_url' with your actual base URL
 pieces_client = PiecesClient(config={'baseUrl': 'your_base_url'})
@@ -113,6 +117,9 @@ print(f"Updated Content: {asset.raw}")
 # Get the asset classification
 classification = asset.classification.value if asset.classification else "None"
 print(f"Asset Classification: {classification}")
+
+asset.classification = ClassificationEnum.SH # Reclassify to shell
+print(f"New Classification: {classification}")
 
 # Get the asset description
 description = asset.description if asset.description else "No description available."

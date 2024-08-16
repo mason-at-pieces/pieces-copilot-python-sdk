@@ -1,4 +1,4 @@
-from .assets import BasicAsset
+from .asset import BasicAsset
 from .chat import BasicChat
 from .message import BasicMessage
 

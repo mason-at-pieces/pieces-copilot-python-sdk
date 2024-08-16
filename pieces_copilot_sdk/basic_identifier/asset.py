@@ -15,7 +15,8 @@ from pieces_os_client import (
 	SeededFormat,
 	SeededFragment,
 	TransferableString,
-	FragmentMetadata)
+	FragmentMetadata,
+	AssetReclassification)
 
 from typing import Optional
 from .basic import Basic
@@ -110,6 +111,34 @@ class BasicAsset(Basic):
 		:return: The classification value of the asset, or None if not available.
 		"""
 		return self.asset.original.reference.classification.specific
+
+	@classification.setter
+	def classification(self, classification):
+		"""
+		Reclassify the classification attribute.
+
+		Args:
+			classification (str or ClassificationSpecificEnum): The new classification value.
+
+		Raises:
+			ValueError: If the classification is not a string or ClassificationSpecificEnum.
+			NotImplementedError: If the asset is an image, reclassification is not supported.
+		"""
+		if isinstance(classification, str):
+			classification = ClassificationSpecificEnum(classification)
+
+		if not isinstance(classification, ClassificationSpecificEnum):
+			raise ValueError("Invalid classification")
+
+		if self.is_image:
+			raise NotImplementedError("Error in reclassify asset: Image reclassification is not supported")
+
+		AssetSnapshot.pieces_client.asset_api.asset_reclassify(
+			asset_reclassification=AssetReclassification(
+				ext=classification, asset=self.asset),
+			transferables=False
+		)
+
 
 
 	@property
