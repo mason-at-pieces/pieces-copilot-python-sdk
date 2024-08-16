@@ -82,7 +82,7 @@ class StreamedIdentifiersCache(ABC):
                 
                 if cls.first_shot:
                     cls.first_shot = False
-                    cls.sort_first_shot()
+                    cls._sort_first_shot()
                 
                 return  # End the worker
 

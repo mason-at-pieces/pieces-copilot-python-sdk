@@ -99,7 +99,7 @@ class BasicAsset(Basic):
 		"""
 		return (
 			self.asset.original.reference.classification.generic ==
-			ClassificationGenericEnum.Image
+			ClassificationGenericEnum.IMAGE
 		)
 
 

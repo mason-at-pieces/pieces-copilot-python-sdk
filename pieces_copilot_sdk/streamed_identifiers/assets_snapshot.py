@@ -1,24 +1,5 @@
 from ._streamed_identifiers import StreamedIdentifiersCache
-from pieces_os_client import (
-	Asset, 
-	AssetsApi,
-	AssetApi,
-	ClassificationSpecificEnum,
-	FormatApi,
-	ClassificationGenericEnum,
-	Annotation,
-	Format,
-	Classification,
-	Annotations,
-	SeededAsset,
-	Seed,
-	SeededFormat,
-	SeededFragment,
-	TransferableString,
-	FragmentMetadata)
 
-
-from typing import Optional, Union
 class AssetSnapshot(StreamedIdentifiersCache):
 	"""
 	A class to represent a snapshot of all the cached Assets.
