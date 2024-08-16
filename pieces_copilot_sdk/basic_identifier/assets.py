@@ -1,4 +1,4 @@
-from .streamed_identifiers.assets_snapshot import AssetSnapshot
+from ..streamed_identifiers.assets_snapshot import AssetSnapshot
 from pieces_os_client import (
 	Asset, 
 	AssetsApi,
@@ -18,10 +18,11 @@ from pieces_os_client import (
 	FragmentMetadata)
 
 from typing import Optional
+from .basic import Basic
 
 # Friendly wrapper (to avoid interacting with the pieces_os_client sdks models)
 
-class BasicAsset:
+class BasicAsset(Basic):
 	"""
 	A wrapper class for managing assets.
 	"""
@@ -37,6 +38,12 @@ class BasicAsset:
 		if not self.asset:
 			raise ValueError("Asset not found")
 
+	@property
+	def id(self) -> str:
+		"""
+			:returns: The asset id
+		"""
+		return self.asset.id
 
 	@property
 	def raw(self) -> Optional[str]:
@@ -76,14 +83,13 @@ class BasicAsset:
 
 
 	@property
-	def classification(self) -> Optional[str]:
+	def classification(self) -> Optional[ClassificationSpecificEnum]:
 		"""
 		Get the specific classification of the asset (eg: py).
 
 		:return: The classification value of the asset, or None if not available.
 		"""
-		c = self.asset.original.reference.classification.specific
-		return c.value if c else None
+		return self.asset.original.reference.classification.specific
 
 	def edit_content(self, content: str):
 		"""
@@ -163,7 +169,36 @@ class BasicAsset:
 		"""
 		Delete the asset.
 		"""
-		AssetSnapshot.pieces_client.assets_api.assets_delete_asset(self._asset_id)
+		AssetSnapshot.pieces_client.assets_api.assets_delete_asset(self.id)
+
+	@staticmethod
+	def create(raw: str, metadata: Optional[FragmentMetadata] = None) -> str:
+		"""
+		Create a new asset.
+
+		Args:
+			raw (str): The raw content of the asset.
+			metadata (Optional[FragmentMetadata]): The metadata of the asset.
+
+		Returns:
+			str: The ID of the created asset.
+		"""
+		seed = Seed(
+			asset=SeededAsset(
+				application=AssetSnapshot.pieces_client.tracked_application,
+				format=SeededFormat(
+					fragment=SeededFragment(
+						string=TransferableString(raw=raw),
+						metadata=metadata
+					)
+				),
+				metadata=None
+			),
+			type="SEEDED_ASSET"
+		)
+
+		created_asset_id = AssetSnapshot.pieces_client.assets_api.assets_create_new_asset(transferables=False, seed=seed).id
+		return created_asset_id
 
 
 	def _get_ocr_content(self) -> Optional[str]:
@@ -215,32 +250,4 @@ class BasicAsset:
 	def _edit_asset(asset):
 		AssetSnapshot.pieces_client.asset_api.asset_update(False,asset)
 
-	@staticmethod
-	def create(raw: str, metadata: Optional[FragmentMetadata] = None) -> str:
-		"""
-		Create a new asset.
-
-		Args:
-			raw (str): The raw content of the asset.
-			metadata (Optional[FragmentMetadata]): The metadata of the asset.
-
-		Returns:
-			str: The ID of the created asset.
-		"""
-		seed = Seed(
-			asset=SeededAsset(
-				application=AssetSnapshot.pieces_client.tracked_application,
-				format=SeededFormat(
-					fragment=SeededFragment(
-						string=TransferableString(raw=raw),
-						metadata=metadata
-					)
-				),
-				metadata=None
-			),
-			type="SEEDED_ASSET"
-		)
-
-		created_asset_id = AssetSnapshot.pieces_client.assets_api.assets_create_new_asset(transferables=False, seed=seed).id
-		return created_asset_id
 

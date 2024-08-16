@@ -22,7 +22,7 @@ import platform
 
 from .copilot import Copilot
 
-from .assets import BasicAsset
+from .basic_identifier import BasicAsset
 from .streamed_identifiers import AssetSnapshot
 from .websockets import *
 

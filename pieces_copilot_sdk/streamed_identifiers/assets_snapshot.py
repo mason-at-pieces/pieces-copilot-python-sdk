@@ -26,25 +26,12 @@ class AssetSnapshot(StreamedIdentifiersCache):
 
 	@classmethod
 	def _api_call(cls, id):
-		"""
-		Make an API call to get the asset snapshot.
-
-		Args:
-			id: The ID of the asset.
-
-		Returns:
-			The asset snapshot.
-		"""
 		asset = cls.pieces_client.asset_api.asset_snapshot(id)
 		cls.on_update(asset)
 		return asset
 
 
-
 	@staticmethod
 	def _sort_first_shot():
-		"""
-		Placeholder method for sorting the first shot.
-		"""
 		pass
 	

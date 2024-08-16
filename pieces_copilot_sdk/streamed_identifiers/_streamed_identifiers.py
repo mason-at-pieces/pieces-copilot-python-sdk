@@ -22,7 +22,7 @@ Example:
 """
 
 import queue
-from typing import Dict, Union, Callable
+from typing import Dict, List, Union, Callable
 from pieces_os_client import Conversation, StreamedIdentifiers, Asset
 from abc import ABC,abstractmethod
 from ..client import PiecesClient
@@ -35,16 +35,26 @@ class StreamedIdentifiersCache(ABC):
     Please use this class only as a parent class.
     """
     pieces_client:PiecesClient
-    on_update:Callable
-    on_remove:Callable
 
     def __init_subclass__(cls,  **kwargs):
         super().__init_subclass__(**kwargs)
+        cls.on_update_list:List[Callable] = []
+        cls.on_remove_list:List[Callable] = []
         cls.identifiers_snapshot: Dict[str, Union[Asset, Conversation,None]] = {}  # Map id:return from the _api_call
         cls.identifiers_queue = queue.Queue()  # Queue for ids to be processed
         cls.identifiers_set = set()  # Set for ids in the queue
         cls.block = True  # to wait for the queue to receive the first id
         cls.first_shot = True  # First time to open the websocket or not
+
+    @classmethod
+    def on_update(cls,obj):
+        for update in cls.on_update_list:
+            update(obj)
+
+    @classmethod
+    def on_remove(cls,obj):
+        for remove in cls.on_remove_list:
+            remove(obj)
 
     @abstractmethod
     def _api_call(id):

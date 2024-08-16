@@ -13,10 +13,10 @@ class Copilot:
     def __init__(self, pieces_client):
         self.pieces_client = pieces_client
         self.message_queue = asyncio.Queue()
-        self.ask_stream_ws = AskStreamWS(self.pieces_client, self.on_stream_message)
+        self.ask_stream_ws = AskStreamWS(self.pieces_client, self._on_stream_message)
         self.conversation_id = None
 
-    def on_stream_message(self, message:QGPTStreamOutput):
+    def _on_stream_message(self, message:QGPTStreamOutput):
         asyncio.create_task(self.message_queue.put(message))
 
     async def ask(self,
