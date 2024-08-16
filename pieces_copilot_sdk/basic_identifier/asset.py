@@ -73,7 +73,7 @@ class BasicAsset(Basic):
 		Edit the original format of the asset.
 
 		Args:
-			data: The new data to be set.
+			content: The new content to be set.
 
 		Raises:
 			NotImplemented: If the asset is an image.
@@ -83,10 +83,10 @@ class BasicAsset(Basic):
 		if original.classification.generic == ClassificationGenericEnum.IMAGE:
 			raise NotImplemented("Can't edit an image yet")
 
-		if original.fragment.string.raw:
-			original.fragment.string.raw = data
-		elif original.file.string.raw:
-			original.file.string.raw = data
+		if original.fragment and original.fragment.string and original.fragment.string.raw:
+			original.fragment.string.raw = content
+		elif original.file and original.file.string and original.file.string.raw:
+			original.file.string.raw = content
 		format_api.format_update_value(transferable=False, format=original)
 
 	@property
