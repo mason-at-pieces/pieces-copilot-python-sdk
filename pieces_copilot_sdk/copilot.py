@@ -7,6 +7,7 @@ from pieces_os_client import (SeededConversation,
     QGPTStreamOutput,
     QGPTStreamEnum,
     QGPTQuestionOutput)
+from pieces_os_client.models.qgpt_prompt_pipeline import QGPTPromptPipeline
 from .basic_identifier.chat import BasicChat
 from .streamed_identifiers.conversations_snapshot import ConversationsSnapshot
 from .websockets import AskStreamWS
@@ -43,7 +44,8 @@ class Copilot:
 
     async def ask(self,
                   query: str,
-                  relevant_qgpt_seeds: RelevantQGPTSeeds = RelevantQGPTSeeds(iterable=[])
+                  relevant_qgpt_seeds: RelevantQGPTSeeds = RelevantQGPTSeeds(iterable=[]),
+                  pipeline:Optional[QGPTPromptPipeline]=None
         ) -> AsyncGenerator[QGPTStreamOutput, None]:
         """
         Asks a question to the QGPT model and streams the responses.
@@ -63,7 +65,8 @@ class Copilot:
                     relevant=relevant_qgpt_seeds,
                     query=query,
                     application=self.pieces_client.tracked_application.id,
-                    model=self.pieces_client.model_id
+                    model=self.pieces_client.model_id,
+                    pipeline=pipeline
                 ),
                 conversation=id,
             )
@@ -79,7 +82,8 @@ class Copilot:
 
     def question(self,
         query:str, 
-        relevant_qgpt_seeds: RelevantQGPTSeeds = RelevantQGPTSeeds(iterable=[])
+        relevant_qgpt_seeds: RelevantQGPTSeeds = RelevantQGPTSeeds(iterable=[]),
+        pipeline:Optional[QGPTPromptPipeline]=None
         ) -> QGPTQuestionOutput:
         gpt_input = QGPTQuestionInput(
             query = query,
