@@ -27,3 +27,16 @@ def setup_asset_snapshot(pieces_client):
     yield
     print("After test:", AssetSnapshot.identifiers_snapshot)
     AssetSnapshot.identifiers_snapshot = {}
+
+@pytest.fixture
+def mock_asset():
+    mock = MagicMock(spec=Asset)
+    mock.id = "test_asset_id"
+    mock.name = "Test Asset"
+    mock.original = MagicMock()
+    mock.original.reference.fragment.string.raw = "Test content"
+    mock.original.reference.classification.specific = ClassificationSpecificEnum.PY
+    mock.original.reference.classification.generic = ClassificationGenericEnum.CODE
+    mock.formats = MagicMock()
+    mock.formats.iterable = []
+    return mock
