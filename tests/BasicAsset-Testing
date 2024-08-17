@@ -86,3 +86,13 @@ def test_edit_content(mock_asset_snapshot, mock_asset, pieces_client):
         
         mock_format_api.format_update_value.assert_called_once()
         assert mock_format.fragment.string.raw == new_content
+
+def test_edit_name(mock_asset_snapshot, mock_asset, pieces_client):
+    asset = BasicAsset(mock_asset.id)
+    new_name = "New Asset Name"
+    
+    with patch.object(pieces_client, 'asset_api') as mock_asset_api:
+        asset.name = new_name
+        
+        assert asset.asset.name == new_name
+        mock_asset_api.asset_update.assert_called_once()
