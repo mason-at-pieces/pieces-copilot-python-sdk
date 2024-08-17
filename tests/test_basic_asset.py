@@ -4,11 +4,11 @@ from pieces_os_client import Asset, Format, ClassificationGenericEnum, Classific
 from datetime import datetime
 import sys
 import importlib.util
-from asset import BasicAsset
-from ..streamed_identifiers.assets_snapshot import AssetSnapshot
-from .client import PiecesClient
+from pieces_copilot_sdk.basic_identifier import BasicAsset
+from pieces_copilot_sdk.streamed_identifiers.assets_snapshot import AssetSnapshot
+from pieces_copilot_sdk.client import PiecesClient
 
-class BasicAsset(BasicAsset):
+class BasicAssetTest(BasicAsset):
     def __init__(self, id) -> None:
         self.asset:Asset = AssetSnapshot.identifiers_snapshot.get(id)
         if not self.asset:
