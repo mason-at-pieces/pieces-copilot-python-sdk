@@ -103,3 +103,18 @@ def test_name_property(mock_asset_snapshot, mock_asset):
     
     mock_asset.name = None
     assert asset.name == "Unnamed snippet"
+
+def test_description_property(mock_asset_snapshot, mock_asset):
+    asset = BasicAsset(mock_asset.id)
+    mock_annotation = MagicMock(spec=Annotation)
+    mock_annotation.type = "DESCRIPTION"
+    mock_annotation.text = "Test description"
+    mock_annotation.updated = MagicMock()
+    mock_annotation.updated.value = datetime.now()
+    mock_annotations = [
+        mock_annotation,
+        MagicMock(spec=Annotation, type="OTHER", text="Other annotation", updated=MagicMock(value=datetime.now()))
+    ]
+    mock_asset.annotations = MagicMock(spec=Annotations, iterable=mock_annotations)
+    
+    assert asset.description == "Test description"
