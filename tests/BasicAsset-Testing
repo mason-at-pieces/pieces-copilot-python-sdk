@@ -46,3 +46,10 @@ def mock_asset_snapshot(mock_asset):
     AssetSnapshot.identifiers_snapshot[mock_asset.id] = mock_asset
     print(f"Added mock asset with ID {mock_asset.id} to AssetSnapshot.identifiers_snapshot")
     return AssetSnapshot
+
+def test_basic_asset_initialization(mock_asset_snapshot, mock_asset):
+    print("In test_basic_asset_initialization:")
+    print("AssetSnapshot.identifiers_snapshot:", AssetSnapshot.identifiers_snapshot)
+    print("mock_asset.id:", mock_asset.id)
+    asset = BasicAsset(mock_asset.id)
+    assert asset.asset == mock_asset
