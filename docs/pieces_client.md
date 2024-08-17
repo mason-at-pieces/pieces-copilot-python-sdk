@@ -1,4 +1,12 @@
 # PiecesClient
+## Initialization
+```python
+from pieces_copilot_sdk import PiecesClient
+
+# Replace 'your_base_url' with your actual base URL
+client = PiecesClient(config={'baseUrl': 'your_base_url'})
+```
+
 ## Snippets ([BasicAsset](./basic_asset.md))
 ### Creating a Snippet
 - Create a snippet 
