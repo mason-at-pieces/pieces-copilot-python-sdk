@@ -118,3 +118,10 @@ def test_description_property(mock_asset_snapshot, mock_asset):
     mock_asset.annotations = MagicMock(spec=Annotations, iterable=mock_annotations)
     
     assert asset.description == "Test description"
+
+def test_annotations_property(mock_asset_snapshot, mock_asset):
+    asset = BasicAsset(mock_asset.id)
+    mock_annotations = [MagicMock(spec=Annotation), MagicMock(spec=Annotation)]
+    mock_asset.annotations = MagicMock(spec=Annotations, iterable=mock_annotations)
+    
+    assert asset.annotations == mock_annotations
