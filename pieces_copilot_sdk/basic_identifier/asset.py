@@ -274,7 +274,7 @@ class BasicAsset(Basic):
 		"""
 		if src is None:
 			return None
-		return src.file.bytes.raw.decode('utf-8')
+		return bytes(src.file.bytes.raw).decode('utf-8')
 
 	@staticmethod
 	def _edit_asset(asset):
