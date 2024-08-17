@@ -9,17 +9,17 @@ class BasicChat(Basic):
     A class to represent a basic chat, initialized with a conversation ID.
     """
 
-    def __init__(self, conversation_id) -> None:
+    def __init__(self, id) -> None:
         """
         Initialize the Chat with a given Conversation ID.
 
         Args:
-            conversation_id: The ID of the conversation.
+            id: The ID of the conversation.
         
         Raises:
             ValueError: If the conversation is not found in the snapshot.
         """
-        self.conversation: Conversation = ConversationsSnapshot.identifiers_snapshot.get(conversation_id)
+        self.conversation: Conversation = ConversationsSnapshot.identifiers_snapshot.get(id)
         if not self.conversation:
             raise ValueError("Conversation not found")
 

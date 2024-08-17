@@ -28,13 +28,13 @@ class BasicAsset(Basic):
 	A wrapper class for managing assets.
 	"""
 
-	def __init__(self, asset_id) -> None:
+	def __init__(self, id) -> None:
 		"""
 		Initialize the BasicAsset with a given asset ID.
 
-		:param asset_id: The ID of the asset.
+		:param id: The ID of the asset.
 		"""
-		self.asset:Asset = AssetSnapshot.identifiers_snapshot.get(asset_id)
+		self.asset:Asset = AssetSnapshot.identifiers_snapshot.get(id)
 		if not self.asset:
 			raise ValueError("Asset not found")
 

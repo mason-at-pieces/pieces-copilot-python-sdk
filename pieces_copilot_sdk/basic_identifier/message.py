@@ -27,7 +27,7 @@ class BasicMessage(Basic):
         Deletes the message.
     """
 
-    def __init__(self, pieces_client:"PiecesClient", message_id: str) -> None:
+    def __init__(self, pieces_client:"PiecesClient", id: str) -> None:
         """
         Constructs all the necessary attributes for the BasicMessage object.
 
@@ -35,12 +35,12 @@ class BasicMessage(Basic):
         ----------
         pieces_client : PiecesClient
             An instance of the PiecesClient to interact with the API.
-        message_id : str
+        id: str
             The ID of the message to be retrieved.
         """
         try:
             self.message:ConversationMessage = pieces_client.conversation_message_api.message_specific_message_snapshot(
-                message=message_id, transferables=True
+                message=id, transferables=True
             )
         except:
             raise ValueError("Error in retrieving the message")
