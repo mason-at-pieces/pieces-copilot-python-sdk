@@ -68,3 +68,21 @@ def test_is_image(mock_asset_snapshot, mock_asset):
 def test_classification_property(mock_asset_snapshot, mock_asset):
     asset = BasicAsset(mock_asset.id)
     assert asset.classification == ClassificationSpecificEnum.PY
+
+def test_edit_content(mock_asset_snapshot, mock_asset, pieces_client):
+    asset = BasicAsset(mock_asset.id)
+    new_content = "Updated content"
+    
+    with patch.object(pieces_client, 'format_api') as mock_format_api:
+        mock_format = MagicMock(spec=Format)
+        mock_format.classification = MagicMock()
+        mock_format.classification.generic = ClassificationGenericEnum.CODE
+        mock_format.fragment = MagicMock()
+        mock_format.fragment.string = MagicMock()
+        mock_format.fragment.string.raw = "Test content"
+        mock_format_api.format_snapshot.return_value = mock_format
+        
+        asset.raw = new_content
+        
+        mock_format_api.format_update_value.assert_called_once()
+        assert mock_format.fragment.string.raw == new_content
