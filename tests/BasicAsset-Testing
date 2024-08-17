@@ -8,4 +8,10 @@ from asset import BasicAsset
 from ..streamed_identifiers.assets_snapshot import AssetSnapshot
 from .client import PiecesClient
 
-
+class BasicAsset(BasicAsset):
+    def __init__(self, id) -> None:
+        self.asset:Asset = AssetSnapshot.identifiers_snapshot.get(id)
+        if not self.asset:
+            print(f"Asset not found for ID: {id}")
+            print("Available IDs in AssetSnapshot.identifiers_snapshot:", AssetSnapshot.identifiers_snapshot.keys())
+            raise ValueError("Asset not found")
