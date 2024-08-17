@@ -96,3 +96,10 @@ def test_edit_name(mock_asset_snapshot, mock_asset, pieces_client):
         
         assert asset.asset.name == new_name
         mock_asset_api.asset_update.assert_called_once()
+
+def test_name_property(mock_asset_snapshot, mock_asset):
+    asset = BasicAsset(mock_asset.id)
+    assert asset.name == "Test Asset"
+    
+    mock_asset.name = None
+    assert asset.name == "Unnamed snippet"
