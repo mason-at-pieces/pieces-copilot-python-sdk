@@ -2,6 +2,9 @@
 ### Method: `ask`
 
 Asks a question to the QGPT model and streams the responses.
+by default it will create a new conversation and always use it in the ask.
+You can always change the conversation in copilot.chat = BasicChat(chat_id="YOU ID GOES HERE")
+
 
 **Args:**
 - `query` (str): The question to ask.
@@ -13,14 +16,40 @@ Asks a question to the QGPT model and streams the responses.
 
 **Example:**
 ```python
-import asyncio
+from pieces_copilot_sdk import PiecesClient
 
-async def main():
-    async for response in copilot.ask("QUESTION GOES HERE"):
-        print("Received response:", response)
+# Replace 'your_base_url' with your actual base URL
+pieces_client = PiecesClient(config={'baseUrl': 'your_base_url'})
 
-asyncio.run(main())
+for response in pieces_client.copilot.ask("Your question"):
+    if response.question:
+        answers = response.question.answers.iterable
+        for answer in answers:
+            print("Received response:", answers.text,end="")
 ```
+
+### Method: `question`
+Asks a question to the QGPT model and return the responses,
+Note: the question is not a part of any conversation.
+
+**Args:**
+    query (str): The question to ask.
+    relevant_qgpt_seeds (RelevantQGPTSeeds): Context to the model .
+    pipeline (Optional[QGPTPromptPipeline]): the pipeline to use.
+
+**returns:**
+    [QGPTQuestionOutput](https://docs.pieces.app/build/reference/python/models/QGPTQuestionOutput): The streamed output from the QGPT model.
+
+```python
+from pieces_copilot_sdk import PiecesClient
+
+# Replace 'your_base_url' with your actual base URL
+pieces_client = PiecesClient(config={'baseUrl': 'your_base_url'})
+
+text = pieces_client.copilot.question("Your question").answers.iterable[0].text
+print(text)
+```
+
 
 ### Method: `chats`
 
