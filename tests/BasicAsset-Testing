@@ -19,3 +19,11 @@ class BasicAsset(BasicAsset):
 @pytest.fixture(scope="function")
 def pieces_client():
     return PiecesClient(config={'baseUrl': 'http://localhost:1000/'})
+
+@pytest.fixture(scope="function", autouse=True)
+def setup_asset_snapshot(pieces_client):
+    AssetSnapshot.identifiers_snapshot = {}
+    print("Before test:", AssetSnapshot.identifiers_snapshot)
+    yield
+    print("After test:", AssetSnapshot.identifiers_snapshot)
+    AssetSnapshot.identifiers_snapshot = {}
