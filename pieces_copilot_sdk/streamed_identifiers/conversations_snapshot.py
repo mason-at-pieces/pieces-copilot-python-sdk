@@ -16,5 +16,5 @@ class ConversationsSnapshot(StreamedIdentifiersCache):
 	@classmethod
 	def _api_call(cls,id):
 		con = cls.pieces_client.conversation_api.conversation_get_specific_conversation(id)
-		cls.on_update()
+		cls.on_update(con)
 		return con

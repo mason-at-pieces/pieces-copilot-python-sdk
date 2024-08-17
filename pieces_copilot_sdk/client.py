@@ -14,12 +14,16 @@ from pieces_os_client import (
     SeededTrackedApplication,
     AssetApi,
     AssetsApi,
-    FragmentMetadata
+    FragmentMetadata,
+    ModelsApi,
+    AnnotationApi
 )
-from typing import Optional
+from typing import Optional,Dict
 import platform
+import atexit
 
-from .assets import AssetWrapper
+from .copilot import Copilot
+from .basic_identifier import BasicAsset
 from .streamed_identifiers import AssetSnapshot
 from .websockets import *
 
@@ -43,6 +47,8 @@ class PiecesClient:
         self.asset_api = AssetApi(self.api_client)
         self.format_api = FormatApi(self.api_client)
         self.connector_api = ConnectorApi(self.api_client)
+        self.models_api = ModelsApi(self.api_client)
+        self.annotation_api = AnnotationApi(self.api_client)
 
         # Websocket urls
         if 'http' not in self.host:
@@ -71,199 +77,59 @@ class PiecesClient:
 
         # Start all initilized websockets
         BaseWebsocket.start_all()
+        self.models = None
+        self.model_name = "GPT-3.5-turbo Chat Model"
+
 
     @staticmethod
     def assets():
-        return [AssetWrapper(id) for id in AssetSnapshot.identifiers_snapshot.keys()]
+        return [BasicAsset(id) for id in AssetSnapshot.identifiers_snapshot.keys()]
 
     @staticmethod
     def asset(asset_id):
-        return AssetWrapper(asset_id)
+        return BasicAsset(asset_id)
 
     @staticmethod
     def create_asset(content:str,metadata:Optional[FragmentMetadata]=None):
-        return AssetWrapper(AssetSnapshot.create(content,metadata))
+        return BasicAsset.create(content,metadata)
 
-
-    # def create_conversation(self,first_message:str, name:str="New Conversation") -> dict:
-
-    #     try:
-    #         new_conversation = self.conversations_api.conversations_create_specific_conversation(
-    #             seeded_conversation={
-    #                 'name': name,
-    #                 # 'type': ConversationTypeEnum.Copilot,
-    #                 'type': 'COPILOT',
-    #             }
-    #         )
-
-    #         if first_message:
-    #             answer = self.prompt_conversation(
-    #                 message=first_message,
-    #                 conversation_id=new_conversation.id,
-    #             )
-
-    #             return {
-    #                 'conversation': new_conversation,
-    #                 'answer': answer
-    #             }
-
-    #         return {'conversation': new_conversation}
-    #     except Exception as error:
-    #         print(f'Error creating conversation: {error}')
-    #         return
-
-    # def get_conversation(self, conversation_id: str, include_raw_messages: bool = False) -> dict:
-    #     conversation_messages = []
-
-    #     try:
-    #         conversation = self.conversation_api.conversation_get_specific_conversation(
-    #             conversation=conversation_id,
-    #         )
-
-    #         if not include_raw_messages:
-    #             return conversation.__dict__
-
-    #         for message_id, index in (conversation.messages.indices or {}).items():
-    #             message_response = self.conversation_message_api.message_specific_message_snapshot(
-    #                 message=message_id,
-    #             )
-
-    #             if (not message_response.fragment or
-    #                     not message_response.fragment.string or
-    #                     not message_response.fragment.string.raw):
-    #                 continue
-
-    #             conversation_messages.append({
-    #                 'message': message_response.fragment.string.raw,
-    #                 'is_user_message': message_response.role == 'USER',
-    #             })
-
-    #         return {
-    #             **conversation.__dict__,
-    #             'raw_messages': conversation_messages,
-    #         }
-    #     except Exception as error:
-    #         print(f'Error getting conversation: {error}')
-    #         return None
-
-
-    # def ask_question(self, question: str) -> str:
-    #     try:
-    #         answer = self.qgpt_api.question(
-    #             qgpt_question_input={
-    #                 'query': question,
-    #                 'pipeline': {
-    #                     'conversation': {
-    #                         'generalizedCodeDialog': {},
-    #                     },
-    #                 },
-    #                 'relevant': {
-    #                     'iterable': [],
-    #                 }
-    #             }
-    #         )
-    #         return answer.answers.iterable[0].text
-    #     except Exception as error:
-    #         print(f'Error asking question: {error}')
-    #         return 'Error asking question'
-
-
-    # def prompt_conversation(self, message: str, conversation_id: str, regenerate_conversation_name: bool = False) -> dict:
-    #     try:
-    #         conversation = self.get_conversation(
-    #             conversation_id=conversation_id,
-    #             include_raw_messages=True,
-    #         )
-
-    #         if not conversation:
-    #             return {'text': 'Conversation not found'}
-
-    #         user_message = self.conversation_messages_api.messages_create_specific_message(
-    #             seeded_conversation_message={
-    #                 # 'role': QGPTConversationMessageRoleEnum.User,
-    #                 'role': 'USER',
-    #                 'fragment': {
-    #                     'string': {
-    #                         'raw': message,
-    #                     },
-    #                 },
-    #                 'conversation': {'id': conversation_id},
-    #             }
-    #         )
-
-    #         relevant_conversation_messages = [
-    #             {
-    #                 'seed': {
-    #                     # 'type': SeedTypeEnum.Asset,
-    #                     'type': 'SEEDED_ASSET',
-    #                     'asset': {
-    #                         'application': self.tracked_application.to_dict(),
-    #                         'format': {
-    #                             'fragment': {
-    #                                 'string': {
-    #                                     'raw': msg['message'],
-    #                                 },
-    #                             },
-    #                         },
-    #                     },
-    #                 }
-    #             }
-    #             for msg in (conversation.get('raw_messages') or [])
-    #         ]
-
-    #         answer = self.qgpt_api.question(
-    #             qgpt_question_input={
-    #                 'query': message,
-    #                 'pipeline': {
-    #                     'conversation': {
-    #                         'contextualizedCodeDialog': {},
-    #                     },
-    #                 },
-    #                 'relevant': {
-    #                     'iterable': relevant_conversation_messages,
-    #                 },
-    #             }
-    #         )
-
-    #         bot_message = self.conversation_messages_api.messages_create_specific_message(
-    #             seeded_conversation_message={
-    #                 # 'role': QGPTConversationMessageRoleEnum.Assistant,
-    #                 'role': 'ASSISTANT',
-    #                 'fragment': {
-    #                     'string': {
-    #                         'raw': answer.answers.iterable[0].text,
-    #                     },
-    #                 },
-    #                 'conversation': {'id': conversation_id},
-    #             }
-    #         )
-
-    #         if regenerate_conversation_name:
-    #             self.update_conversation_name(conversation_id=conversation_id)
-
-    #         return {
-    #             'text': answer.answers.iterable[0].text,
-    #             'user_message_id': user_message.id,
-    #             'bot_message_id': bot_message.id,
-    #         }
-    #     except Exception as error:
-    #         print(f'Error prompting conversation: {error}')
-    #         return {'text': 'Error asking question'}
-
-    # def update_conversation_name(self, conversation_id: str) -> str:
-    #     try:
-    #         conversation = self.conversation_api.conversation_specific_conversation_rename(
-    #             conversation=conversation_id,
-    #         )
-    #         return conversation.name
-    #     except Exception as error:
-    #         print(f'Error updating conversation name: {error}')
-    #         return 'Error updating conversation name'
-
-    def get_user_profile_picture(self) -> str:
+    def get_user_profile_picture(self) -> Optional[str]:
         try:
             user_res = self.user_api.user_snapshot()
             return user_res.user.picture or None
         except Exception as error:
             print(f'Error getting user profile picture: {error}')
             return None
+
+    def get_models(self) -> Dict[str, str]:
+        if self.models:
+            return self.models
+        api_response = self.models_api.models_snapshot()
+        models = {model.name: model.id for model in api_response.iterable if model.cloud or model.downloaded} # getting the models that are available in the cloud or is downloaded
+        self.models = models
+        return models
+
+    @property
+    def model_name(self):
+        return self._model_name
+
+    @model_name.setter
+    def model_name(self,model):
+        models = self.get_models()
+        if model not in models:
+            raise ValueError(f"Not a vaild model name, the available models are {", ".join(models.keys())}")
+        self._model_name = model
+        self.model_id = models[model]
+
+    @property
+    def available_models_names(self) -> list:
+        return list(self.get_models().keys())
+
+    @property
+    def copilot(self):
+        return Copilot(self)
+
+
+# Register the function to be called on exit
+atexit.register(BaseWebsocket.close_all)
+

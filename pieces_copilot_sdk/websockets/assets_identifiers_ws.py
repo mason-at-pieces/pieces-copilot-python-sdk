@@ -1,10 +1,11 @@
-from typing import Callable,Optional
+from typing import Callable,Optional,TYPE_CHECKING
 from pieces_os_client import StreamedIdentifiers,Asset
 from ..streamed_identifiers.assets_snapshot import AssetSnapshot
-from ..client import PiecesClient
 from .base_websocket import BaseWebsocket
 from websocket import WebSocketApp
 
+if TYPE_CHECKING:
+	from ..client import PiecesClient
 class AssetsIdentifiersWS(BaseWebsocket):
 	"""
 	WebSocket client for handling asset identifiers updates and removals.
@@ -18,7 +19,7 @@ class AssetsIdentifiersWS(BaseWebsocket):
 		on_close (Optional[Callable[[WebSocketApp], None]]): Callback function to handle WebSocket closing.
 	"""
 
-	def __init__(self, pieces_client: PiecesClient, 
+	def __init__(self, pieces_client: "PiecesClient", 
 				 on_asset_update: Optional[Callable[[Asset], None]] = None,
 				 on_asset_remove: Optional[Callable[[Asset], None]] = None,
 				 on_open_callback: Optional[Callable[[WebSocketApp], None]] = None, 
@@ -36,8 +37,10 @@ class AssetsIdentifiersWS(BaseWebsocket):
 			on_close (Optional[Callable[[WebSocketApp], None]]): Callback function to handle WebSocket closing.
 		"""
 		AssetSnapshot.pieces_client = pieces_client
-		AssetSnapshot.on_update = on_asset_update if on_asset_update else lambda x: None
-		AssetSnapshot.on_remove = on_asset_remove if on_asset_remove else lambda x: None
+		if on_asset_update:
+			AssetSnapshot.on_update_list.append(on_asset_update)
+		if on_asset_remove:
+			AssetSnapshot.on_remove_list.append(on_asset_remove)
 		super().__init__(pieces_client, AssetSnapshot.streamed_identifiers_callback, on_open_callback, on_error, on_close)
 
 	@property
