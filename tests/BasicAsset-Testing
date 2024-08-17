@@ -57,3 +57,10 @@ def test_basic_asset_initialization(mock_asset_snapshot, mock_asset):
 def test_raw_property(mock_asset_snapshot, mock_asset):
     asset = BasicAsset(mock_asset.id)
     assert asset.raw == "Test content"
+
+def test_is_image(mock_asset_snapshot, mock_asset):
+    asset = BasicAsset(mock_asset.id)
+    assert not asset.is_image
+
+    mock_asset.original.reference.classification.generic = ClassificationGenericEnum.IMAGE
+    assert asset.is_image
