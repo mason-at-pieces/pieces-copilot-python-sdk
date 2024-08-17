@@ -40,3 +40,9 @@ def mock_asset():
     mock.formats = MagicMock()
     mock.formats.iterable = []
     return mock
+
+@pytest.fixture
+def mock_asset_snapshot(mock_asset):
+    AssetSnapshot.identifiers_snapshot[mock_asset.id] = mock_asset
+    print(f"Added mock asset with ID {mock_asset.id} to AssetSnapshot.identifiers_snapshot")
+    return AssetSnapshot
