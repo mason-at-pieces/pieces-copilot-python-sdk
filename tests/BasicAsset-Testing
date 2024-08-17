@@ -15,3 +15,7 @@ class BasicAsset(BasicAsset):
             print(f"Asset not found for ID: {id}")
             print("Available IDs in AssetSnapshot.identifiers_snapshot:", AssetSnapshot.identifiers_snapshot.keys())
             raise ValueError("Asset not found")
+
+@pytest.fixture(scope="function")
+def pieces_client():
+    return PiecesClient(config={'baseUrl': 'http://localhost:1000/'})
