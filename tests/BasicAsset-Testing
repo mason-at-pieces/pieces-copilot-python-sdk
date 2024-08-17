@@ -131,3 +131,12 @@ def test_delete(mock_asset_snapshot, mock_asset, pieces_client):
     with patch.object(pieces_client, 'assets_api') as mock_assets_api:
         asset.delete()
         mock_assets_api.assets_delete_asset.assert_called_once_with(mock_asset.id)
+
+def test_create(pieces_client):
+    with patch.object(pieces_client, 'assets_api') as mock_assets_api:
+        mock_assets_api.assets_create_new_asset.return_value = MagicMock(id="new_asset_id")
+        
+        new_asset_id = BasicAsset.create("New asset content")
+        
+        assert new_asset_id == "new_asset_id"
+        mock_assets_api.assets_create_new_asset.assert_called_once()
