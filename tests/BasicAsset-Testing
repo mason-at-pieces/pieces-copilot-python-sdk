@@ -125,3 +125,9 @@ def test_annotations_property(mock_asset_snapshot, mock_asset):
     mock_asset.annotations = MagicMock(spec=Annotations, iterable=mock_annotations)
     
     assert asset.annotations == mock_annotations
+
+def test_delete(mock_asset_snapshot, mock_asset, pieces_client):
+    asset = BasicAsset(mock_asset.id)
+    with patch.object(pieces_client, 'assets_api') as mock_assets_api:
+        asset.delete()
+        mock_assets_api.assets_delete_asset.assert_called_once_with(mock_asset.id)
