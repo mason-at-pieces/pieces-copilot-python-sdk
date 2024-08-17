@@ -27,16 +27,13 @@ class BasicAsset(Basic):
 	"""
 	A wrapper class for managing assets.
 	"""
-
-	def __init__(self, id) -> None:
-		"""
-		Initialize the BasicAsset with a given asset ID.
-
-		:param id: The ID of the asset.
-		"""
-		self.asset:Asset = AssetSnapshot.identifiers_snapshot.get(id)
-		if not self.asset:
+		
+	@property
+	def asset(self) -> Asset:
+		asset = AssetSnapshot.identifiers_snapshot.get(self._id)
+		if not asset:
 			raise ValueError("Asset not found")
+		return asset
 
 	@property
 	def id(self) -> str:
@@ -67,6 +64,7 @@ class BasicAsset(Basic):
 				self.asset.preview.base.reference.fragment.string.raw or
 				''
 			)
+
 	@raw.setter
 	def raw(self, content: str):
 		"""

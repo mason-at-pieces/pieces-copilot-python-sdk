@@ -8,20 +8,12 @@ class BasicChat(Basic):
     """
     A class to represent a basic chat, initialized with a conversation ID.
     """
-
-    def __init__(self, id) -> None:
-        """
-        Initialize the Chat with a given Conversation ID.
-
-        Args:
-            id: The ID of the conversation.
-        
-        Raises:
-            ValueError: If the conversation is not found in the snapshot.
-        """
-        self.conversation: Conversation = ConversationsSnapshot.identifiers_snapshot.get(id)
-        if not self.conversation:
+    @property
+    def conversation(self) -> Conversation:
+        conversation = ConversationsSnapshot.identifiers_snapshot.get(self._id)
+        if not conversation:
             raise ValueError("Conversation not found")
+        return conversation
 
     @property
     def id(self):
@@ -63,25 +55,11 @@ class BasicChat(Basic):
         """
         out = []
         for message_id, index in (self.conversation.messages.indices or {}).items():
-            message_response = self._get_message(message_id)
             if index == -1:  # Deleted message
                 continue
-            out.append(BasicMessage(message_response))
+            out.append(BasicMessage(ConversationsSnapshot.pieces_client,message_id))
         return out
 
-    @staticmethod
-    def _get_message(message_id):
-        """
-        Retrieves a message by its ID.
-
-        Args:
-            message_id: The ID of the message to retrieve.
-
-        Returns:
-            The message response.
-        """
-        # Implementation needed here
-        pass
 
     @property
     def annotations(self):

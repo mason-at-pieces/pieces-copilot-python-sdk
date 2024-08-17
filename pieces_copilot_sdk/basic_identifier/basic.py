@@ -1,9 +1,28 @@
-from abc import ABC,abstractmethod
+from abc import ABC, ABCMeta,abstractmethod
 from typing import  Optional
 from pieces_os_client import Annotations, AnnotationTypeEnum
-class Basic(ABC):
+
+
+class SingletonMeta(ABCMeta):
+    _instances = {}
+
+    def __call__(cls, *args, **kwargs):
+        if cls not in cls._instances:
+            instance = super().__call__(*args, **kwargs)
+            cls._instances[cls] = instance
+        return cls._instances[cls]
+
+class Basic(ABC, metaclass=SingletonMeta):
+	def __init__(self, id) -> None:
+		"""
+		Initialize the class with a given ID.
+
+		:param id: The ID of the Object.
+		"""
+		self._id = id
+
 	@property
-	def description(self):
+	def description(self) -> Optional[str]:
 		"""
 		Retrieve the description.
 
@@ -32,11 +51,11 @@ class Basic(ABC):
 
 	@property
 	@abstractmethod
-	def id(self):
+	def id(self) -> str:
 		pass
 
 	@abstractmethod
-	def delete(self):
+	def delete(self) -> None:
 		pass
 
 	def __repr__(self):
