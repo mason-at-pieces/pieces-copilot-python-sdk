@@ -18,7 +18,7 @@ asset = BasicAsset("Your id goes here")
 
 Returns the asset ID.
 
-### `raw`
+### `raw_content`
 
 Edit the original format of the asset.
 
@@ -92,8 +92,6 @@ from pieces_os_client import ClassificationSpecificEnum
 # Replace 'your_base_url' with your actual base URL
 pieces_client = PiecesClient(config={'baseUrl': 'your_base_url'})
 
-pieces_client.ensure_initialization()
-
 asset = PiecesClient.assets()[0]
 
 # Get the asset ID
@@ -112,10 +110,10 @@ asset.name = "Updated Asset Name"
 print(f"Updated Asset Name: {asset.name}")
 
 # Retrieve and modify the asset content
-content = asset.raw
+content = asset.raw_content
 print(f"Original Content: {content}")
-asset.raw = content + "\n# This is a comment"
-print(f"Updated Content: {asset.raw}")
+asset.raw_content = content + "\n# This is a comment"
+print(f"Updated Content: {asset.raw_content}")
 
 # Get the asset classification
 classification = asset.classification.value if asset.classification else "None"

@@ -2,7 +2,7 @@
 
 ## Properties
 
-### `raw`
+### `raw_content`
 
 Sets the raw content of the message and updates it in the API.
 
@@ -49,7 +49,7 @@ chat = pieces_client.copilot.chats()[0]
 messages = chat.messages()
 
 # Set the raw content of the message
-message.raw = "This is the updated raw content of the message."
+message.raw_content = "This is the updated raw content of the message."
 print("Raw content updated.")
 
 # Get the role of the message
