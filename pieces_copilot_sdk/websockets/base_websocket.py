@@ -43,6 +43,8 @@ class BaseWebsocket(ABC):
 		self.on_close = on_close if on_close else lambda ws, close_status_code, close_msg: None
 		self.pieces_client = pieces_client
 		self._initialized = threading.Event()
+		self._initialized.set() # Set it as true at the beginning
+
 
 		if self not in BaseWebsocket.instances:
 			BaseWebsocket.instances.append(self)
@@ -93,6 +95,7 @@ class BaseWebsocket(ABC):
 		Start the websocket connection in a new thread.
 		"""
 		if not self.running:
+			self._initialized.clear()
 			self.thread = threading.Thread(target=self.run)
 			self.thread.start()
 
