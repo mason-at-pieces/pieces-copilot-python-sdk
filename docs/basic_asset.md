@@ -92,7 +92,7 @@ from pieces_os_client import ClassificationSpecificEnum
 # Replace 'your_base_url' with your actual base URL
 pieces_client = PiecesClient(config={'baseUrl': 'your_base_url'})
 
-asset = PiecesClient.assets()[0]
+asset = pieces_client.assets()[0]
 
 # Get the asset ID
 asset_id = asset.id
