@@ -117,3 +117,9 @@ class TestBasicChat:
         
         chat = BasicChat("test_id")
         assert chat.annotations is None
+
+    def test_delete(self):
+        chat = BasicChat("test_id")
+        chat.delete()
+        
+        ConversationsSnapshot.pieces_client.conversations_api.conversations_delete_specific_conversation.assert_called_once_with("test_id")
