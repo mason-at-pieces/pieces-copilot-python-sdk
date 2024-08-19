@@ -55,3 +55,7 @@ class TestBasicChat:
         chat = BasicChat("test_id")
         assert chat.id == "test_id"
         assert chat.name == "Test Conversation"
+
+    def test_init_invalid_id(self):
+        with pytest.raises(ValueError, match="Conversation not found"):
+            BasicChat("invalid_id")
