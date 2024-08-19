@@ -111,3 +111,9 @@ class TestBasicChat:
         
         chat = BasicChat("test_id")
         assert chat.annotations == ["annotation1", "annotation2"]
+
+    def test_annotations_property_none(self):
+        ConversationsSnapshot.identifiers_snapshot["test_id"].annotations = None
+        
+        chat = BasicChat("test_id")
+        assert chat.annotations is None
