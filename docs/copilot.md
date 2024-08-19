@@ -21,11 +21,11 @@ from pieces_copilot_sdk import PiecesClient
 # Replace 'your_base_url' with your actual base URL
 pieces_client = PiecesClient(config={'baseUrl': 'your_base_url'})
 
-for response in pieces_client.copilot.ask("Your question"):
+for response in pieces_client.copilot.stream_question("Your question"):
     if response.question:
         answers = response.question.answers.iterable
         for answer in answers:
-            print("Received response:", answers.text,end="")
+            print(answer.text,end="")
 ```
 
 ### Method: `question`
