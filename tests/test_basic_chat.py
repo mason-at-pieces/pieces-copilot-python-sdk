@@ -104,3 +104,10 @@ class TestBasicChat:
         for call_args in mock_basic_message_init.call_args_list:
             assert isinstance(call_args[0][0], Mock)
             assert call_args[0][0].id in ["msg1", "msg2"]
+
+    def test_annotations_property(self):
+        mock_annotations = Mock(iterable=["annotation1", "annotation2"])
+        ConversationsSnapshot.identifiers_snapshot["test_id"].annotations = mock_annotations
+        
+        chat = BasicChat("test_id")
+        assert chat.annotations == ["annotation1", "annotation2"]
