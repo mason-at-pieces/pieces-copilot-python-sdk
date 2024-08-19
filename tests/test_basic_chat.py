@@ -40,4 +40,6 @@ from pieces_copilot_sdk.client import PiecesClient
 from pieces_copilot_sdk.basic_identifier.basic import Basic
 from pieces_copilot_sdk.basic_identifier.message import BasicMessage
 from pieces_copilot_sdk.basic_identifier.chat import BasicChat
+from pieces_copilot_sdk.streamed_identifiers._streamed_identifiers import StreamedIdentifiersCache
+from pieces_copilot_sdk.streamed_identifiers.conversations_snapshot import ConversationsSnapshot
 
