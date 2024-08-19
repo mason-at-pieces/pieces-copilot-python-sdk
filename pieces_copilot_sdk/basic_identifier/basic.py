@@ -1,18 +1,9 @@
-from abc import ABC, ABCMeta,abstractmethod
+from abc import ABC,abstractmethod
 from typing import  Optional
 from pieces_os_client import Annotations, AnnotationTypeEnum
 
 
-class SingletonMeta(ABCMeta):
-    _instances = {}
-
-    def __call__(cls, *args, **kwargs):
-        if cls not in cls._instances:
-            instance = super().__call__(*args, **kwargs)
-            cls._instances[cls] = instance
-        return cls._instances[cls]
-
-class Basic(ABC, metaclass=SingletonMeta):
+class Basic(ABC):
 	def __init__(self, id) -> None:
 		"""
 		Initialize the class with a given ID.
