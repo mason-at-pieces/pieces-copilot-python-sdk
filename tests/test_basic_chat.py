@@ -50,3 +50,8 @@ class TestBasicChat:
         self.mock_conversation.name = "Test Conversation"
         ConversationsSnapshot.identifiers_snapshot = {"test_id": self.mock_conversation}
         ConversationsSnapshot.pieces_client = Mock()
+
+    def test_init_valid_id(self):
+        chat = BasicChat("test_id")
+        assert chat.id == "test_id"
+        assert chat.name == "Test Conversation"
