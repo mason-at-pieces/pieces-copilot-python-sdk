@@ -54,6 +54,8 @@ from pieces_copilot_sdk import PiecesClient
 # Replace 'your_base_url' with your actual base URL
 pieces_client = PiecesClient(config={'baseUrl': 'your_base_url'})
 
+pieces_client.ensure_initialization()
+
 # Initialize a BasicChat instance
 chat = pieces_client.copilot.chats()[0]
 
@@ -89,4 +91,6 @@ print(f"Description: {description}")
 # Delete the conversation
 chat.delete()
 print("Conversation deleted.")
+
+pieces_client.close()
 ```

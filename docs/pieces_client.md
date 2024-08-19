@@ -5,8 +5,16 @@ from pieces_copilot_sdk import PiecesClient
 
 # Replace 'your_base_url' with your actual base URL
 client = PiecesClient(config={'baseUrl': 'your_base_url'})
+
+pieces_client.ensure_initialization() # Wait for the client to cache and open websockets
 ```
 
+It is recommended to use the `pieces_client.ensure_initialization()` method to wait for all the websockets to open and the snippets and the chats to be cached
+
+## Close
+```python
+pieces_client.close() # Closes all the websockets you should use it at the end
+```
 ## Snippets ([BasicAsset](./basic_asset.md))
 ### Creating a Snippet
 - Create a snippet 

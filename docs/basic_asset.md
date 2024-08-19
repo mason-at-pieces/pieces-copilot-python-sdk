@@ -92,6 +92,8 @@ from pieces_os_client import ClassificationSpecificEnum
 # Replace 'your_base_url' with your actual base URL
 pieces_client = PiecesClient(config={'baseUrl': 'your_base_url'})
 
+pieces_client.ensure_initialization()
+
 asset = PiecesClient.assets()[0]
 
 # Get the asset ID
@@ -137,4 +139,5 @@ print("Asset deleted.")
 # Create a new asset
 new_asset_id = BasicAsset.create("New Asset content")
 print(f"New Asset ID: {new_asset_id}")
+pieces_client.close()
 ```

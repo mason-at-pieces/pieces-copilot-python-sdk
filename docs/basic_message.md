@@ -42,6 +42,8 @@ from pieces_copilot_sdk import PiecesClient
 # Replace 'your_base_url' with your actual base URL
 pieces_client = PiecesClient(config={'baseUrl': 'your_base_url'})
 
+pieces_client.ensure_initialization()
+
 # Initialize a BasicChat instance
 chat = pieces_client.copilot.chats()[0]
 messages = chat.messages()
@@ -61,4 +63,6 @@ print(f"Message ID: {message_id}")
 # Delete the message
 message.delete()
 print("Message deleted.")
+
+pieces_client.close()
 ```
