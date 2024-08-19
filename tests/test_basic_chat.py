@@ -43,3 +43,10 @@ from pieces_copilot_sdk.basic_identifier.chat import BasicChat
 from pieces_copilot_sdk.streamed_identifiers._streamed_identifiers import StreamedIdentifiersCache
 from pieces_copilot_sdk.streamed_identifiers.conversations_snapshot import ConversationsSnapshot
 
+class TestBasicChat:
+    @pytest.fixture(autouse=True)
+    def setup(self):
+        self.mock_conversation = Mock(id="test_id", messages=Mock(indices={}), annotations=None)
+        self.mock_conversation.name = "Test Conversation"
+        ConversationsSnapshot.identifiers_snapshot = {"test_id": self.mock_conversation}
+        ConversationsSnapshot.pieces_client = Mock()
