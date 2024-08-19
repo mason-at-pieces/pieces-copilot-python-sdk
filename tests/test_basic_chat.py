@@ -67,3 +67,8 @@ class TestBasicChat:
         chat.name = "New Name"
         assert chat.name == "New Name"
         ConversationsSnapshot.pieces_client.conversation_api.conversation_update.assert_called_once()
+
+    def test_name_property_default(self):
+        self.mock_conversation.name = None
+        chat = BasicChat("test_id")
+        assert chat.name == "New Conversation"
