@@ -1,3 +1,4 @@
+import threading
 from ._streamed_identifiers import StreamedIdentifiersCache
 
 class ConversationsSnapshot(StreamedIdentifiersCache):
@@ -7,6 +8,8 @@ class ConversationsSnapshot(StreamedIdentifiersCache):
 	Class attributes:
 	identifiers_snapshot (dict): A dictionary where the keys are UUIDs (unique identifiers) and the values are Conversation objects.
 	"""
+	_initializated:threading.Event
+
 	@classmethod
 	def _sort_first_shot(cls):
 		# Sort the dictionary by the "updated" timestamp

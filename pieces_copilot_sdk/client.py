@@ -129,6 +129,17 @@ class PiecesClient:
     def copilot(self):
         return Copilot(self)
 
+    def ensure_initialization(self):
+        """
+            Waits for all the assets/conversations and all the started websockets to open
+        """
+        BaseWebsocket.wait_all()
+
+    def close(self):
+        """
+            Use this when you exit the app
+        """
+        BaseWebsocket.close_all()
 
 # Register the function to be called on exit
 atexit.register(BaseWebsocket.close_all)

@@ -41,7 +41,9 @@ class AssetsIdentifiersWS(BaseWebsocket):
 			AssetSnapshot.on_update_list.append(on_asset_update)
 		if on_asset_remove:
 			AssetSnapshot.on_remove_list.append(on_asset_remove)
+
 		super().__init__(pieces_client, AssetSnapshot.streamed_identifiers_callback, on_open_callback, on_error, on_close)
+		AssetSnapshot._initializated = self._initializated
 
 	@property
 	def url(self):
@@ -62,3 +64,8 @@ class AssetsIdentifiersWS(BaseWebsocket):
 			message (str): The incoming message in JSON format.
 		"""
 		self.on_message_callback(StreamedIdentifiers.from_json(message))
+
+	@property
+	def _is_initializated_on_open(self):
+		return False
+

@@ -9,10 +9,11 @@ if TYPE_CHECKING:
 
 class BaseWebsocket(ABC):
 	instances = []
+	_initializated_events:list[threading.Event] = []
 
 	def __new__(cls, *args, **kwargs):
 		"""
-		Ensure that only one instance of the class is created (Singleton pattern).
+		Ensure that only one instance of the url class is created (Singleton pattern).
 		"""
 		if not hasattr(cls, 'instance'):
 			cls.instance = super(BaseWebsocket, cls).__new__(cls)
@@ -37,13 +38,19 @@ class BaseWebsocket(ABC):
 		self.thread = None
 		self.running = False
 		self.on_message_callback = on_message_callback
-		self.on_open_callback = on_open_callback if on_open_callback else lambda: None
+		self.on_open_callback = on_open_callback if on_open_callback else lambda x: None
 		self.on_error = on_error if on_error else lambda ws, error: print(error)
 		self.on_close = on_close if on_close else lambda ws, close_status_code, close_msg: None
 		self.pieces_client = pieces_client
+		self._initializated = threading.Event()
 
 		if self not in BaseWebsocket.instances:
 			BaseWebsocket.instances.append(self)
+			BaseWebsocket._initializated_events.append(self._initializated)
+	
+	@property
+	def _is_initializated_on_open(self):
+		return True
 
 	@abstractmethod
 	def url(self) -> str:
@@ -64,7 +71,9 @@ class BaseWebsocket(ABC):
 		Handle the websocket opening event.
 		"""
 		self.running = True
-		self.on_open_callback()
+		self.on_open_callback(ws)
+		if self._is_initializated_on_open:
+			self._initializated.set()
 
 	def run(self):
 		"""
@@ -123,7 +132,7 @@ class BaseWebsocket(ABC):
 		"""
 		Return a string representation of the instance.
 		"""
-		return getattr(self, "url", self.instances)
+		return getattr(self, "url", "BaseWebsocket(ABC)")
 
 	@classmethod
 	def is_running(cls) -> bool:
@@ -138,7 +147,7 @@ class BaseWebsocket(ABC):
 		return False
 
 	@classmethod
-	def get_instance(cls) -> Optional[Self]:
+	def get_instance(cls) -> Optional[type]:
 		"""
 		Get the singleton instance of the class.
 
@@ -153,3 +162,12 @@ class BaseWebsocket(ABC):
 		"""
 		for ws in cls.instances:
 			ws.start()
+
+	@classmethod
+	def wait_all(cls):
+		"""
+			Wait for all websockets to set the internal flag on
+		"""
+		for event in cls._initializated_events:
+			event.wait()
+

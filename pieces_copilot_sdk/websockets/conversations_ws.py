@@ -33,8 +33,9 @@ class ConversationWS(BaseWebsocket):
 		if on_conversation_remove:
 			ConversationsSnapshot.on_remove_list.append(on_conversation_remove)
 		
-		# Initialize the base WebSocket with the provided callbacks
 		super().__init__(pieces_client, ConversationsSnapshot.streamed_identifiers_callback, on_open_callback, on_error, on_close)
+		ConversationsSnapshot._initializated = self._initializated
+		# Initialize the base WebSocket with the provided callbacks
 	
 	@property
 	def url(self):
@@ -54,3 +55,7 @@ class ConversationWS(BaseWebsocket):
 		"""
 		# Parse the incoming message and pass it to the callback
 		self.on_message_callback(StreamedIdentifiers.from_json(message))
+
+	@property
+	def _is_initializated_on_open(self):
+		return False
