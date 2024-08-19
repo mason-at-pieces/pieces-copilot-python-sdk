@@ -59,3 +59,11 @@ class TestBasicChat:
     def test_init_invalid_id(self):
         with pytest.raises(ValueError, match="Conversation not found"):
             BasicChat("invalid_id")
+
+    def test_name_property(self):
+        chat = BasicChat("test_id")
+        assert chat.name == "Test Conversation"
+
+        chat.name = "New Name"
+        assert chat.name == "New Name"
+        ConversationsSnapshot.pieces_client.conversation_api.conversation_update.assert_called_once()
