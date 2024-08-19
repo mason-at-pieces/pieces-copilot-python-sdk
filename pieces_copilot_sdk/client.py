@@ -81,12 +81,12 @@ class PiecesClient:
         self.model_name = "GPT-3.5-turbo Chat Model"
 
 
-    @staticmethod
-    def assets():
+    def assets(self):
+        self.ensure_initialization()
         return [BasicAsset(id) for id in AssetSnapshot.identifiers_snapshot.keys()]
 
-    @staticmethod
-    def asset(asset_id):
+    def asset(self,asset_id):
+        self.ensure_initialization()
         return BasicAsset(asset_id)
 
     @staticmethod

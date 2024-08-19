@@ -17,7 +17,7 @@ class BasicMessage(Basic):
 
     Methods:
     -------
-    raw:
+    raw_content:
         Gets or sets the raw content of the message.
     role:
         Gets the role of the message.
@@ -47,7 +47,7 @@ class BasicMessage(Basic):
         self.pieces_client = pieces_client
 
     @property
-    def raw(self) -> Optional[str]:
+    def raw_content(self) -> Optional[str]:
         """
         Gets the raw content of the message.
 
@@ -61,8 +61,8 @@ class BasicMessage(Basic):
         except:
             pass
 
-    @raw.setter
-    def raw(self, value: str) -> None:
+    @raw_content.setter
+    def raw_content(self, value: str) -> None:
         """
         Sets the raw content of the message and updates it in the API.
 

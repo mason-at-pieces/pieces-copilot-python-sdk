@@ -8,7 +8,7 @@ class ConversationsSnapshot(StreamedIdentifiersCache):
 	Class attributes:
 	identifiers_snapshot (dict): A dictionary where the keys are UUIDs (unique identifiers) and the values are Conversation objects.
 	"""
-	_initializated:threading.Event
+	_initialized:threading.Event
 
 	@classmethod
 	def _sort_first_shot(cls):

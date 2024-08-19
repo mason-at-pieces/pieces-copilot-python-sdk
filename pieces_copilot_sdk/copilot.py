@@ -34,7 +34,7 @@ class Copilot:
         self.ask_stream_ws = AskStreamWS(self.pieces_client, self._on_message_queue.put)
         self._chat = None
 
-    def ask(self,
+    def stream_question(self,
             query: str,
             relevant_qgpt_seeds: RelevantQGPTSeeds = RelevantQGPTSeeds(iterable=[]),
             pipeline: Optional[QGPTPromptPipeline] = None
@@ -109,6 +109,7 @@ class Copilot:
         Returns:
             list[BasicChat]: A list of BasicChat instances representing the chat identifiers.
         """
+        self.pieces_client.ensure_initialization()
         return [BasicChat(id) for id in ConversationsSnapshot.identifiers_snapshot]
 
     @property

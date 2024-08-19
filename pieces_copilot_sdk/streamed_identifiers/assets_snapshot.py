@@ -5,7 +5,7 @@ class AssetSnapshot(StreamedIdentifiersCache):
 	"""
 	A class to represent a snapshot of all the cached Assets.
 	"""
-	_initializated:threading.Event
+	_initialized:threading.Event
 
 	@classmethod
 	def _api_call(cls, id):

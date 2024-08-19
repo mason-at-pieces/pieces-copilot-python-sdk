@@ -9,7 +9,7 @@ if TYPE_CHECKING:
 
 class BaseWebsocket(ABC):
 	instances = []
-	_initializated_events:list[threading.Event] = []
+	_initialized_events:list[threading.Event] = []
 
 	def __new__(cls, *args, **kwargs):
 		"""
@@ -42,14 +42,14 @@ class BaseWebsocket(ABC):
 		self.on_error = on_error if on_error else lambda ws, error: print(error)
 		self.on_close = on_close if on_close else lambda ws, close_status_code, close_msg: None
 		self.pieces_client = pieces_client
-		self._initializated = threading.Event()
+		self._initialized = threading.Event()
 
 		if self not in BaseWebsocket.instances:
 			BaseWebsocket.instances.append(self)
-			BaseWebsocket._initializated_events.append(self._initializated)
+			BaseWebsocket._initialized_events.append(self._initialized)
 	
 	@property
-	def _is_initializated_on_open(self):
+	def _is_initialized_on_open(self):
 		return True
 
 	@abstractmethod
@@ -72,8 +72,8 @@ class BaseWebsocket(ABC):
 		"""
 		self.running = True
 		self.on_open_callback(ws)
-		if self._is_initializated_on_open:
-			self._initializated.set()
+		if self._is_initialized_on_open:
+			self._initialized.set()
 
 	def run(self):
 		"""
@@ -168,6 +168,6 @@ class BaseWebsocket(ABC):
 		"""
 			Wait for all websockets to set the internal flag on
 		"""
-		for event in cls._initializated_events:
+		for event in cls._initialized_events:
 			event.wait()
 

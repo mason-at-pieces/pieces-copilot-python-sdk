@@ -43,7 +43,7 @@ class AssetsIdentifiersWS(BaseWebsocket):
 			AssetSnapshot.on_remove_list.append(on_asset_remove)
 
 		super().__init__(pieces_client, AssetSnapshot.streamed_identifiers_callback, on_open_callback, on_error, on_close)
-		AssetSnapshot._initializated = self._initializated
+		AssetSnapshot._initialized = self._initialized
 
 	@property
 	def url(self):
@@ -66,6 +66,6 @@ class AssetsIdentifiersWS(BaseWebsocket):
 		self.on_message_callback(StreamedIdentifiers.from_json(message))
 
 	@property
-	def _is_initializated_on_open(self):
+	def _is_initialized_on_open(self):
 		return False
 

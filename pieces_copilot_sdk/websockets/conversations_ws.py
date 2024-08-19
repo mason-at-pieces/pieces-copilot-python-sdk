@@ -34,7 +34,7 @@ class ConversationWS(BaseWebsocket):
 			ConversationsSnapshot.on_remove_list.append(on_conversation_remove)
 		
 		super().__init__(pieces_client, ConversationsSnapshot.streamed_identifiers_callback, on_open_callback, on_error, on_close)
-		ConversationsSnapshot._initializated = self._initializated
+		ConversationsSnapshot._initialized = self._initialized
 		# Initialize the base WebSocket with the provided callbacks
 	
 	@property
@@ -57,5 +57,5 @@ class ConversationWS(BaseWebsocket):
 		self.on_message_callback(StreamedIdentifiers.from_json(message))
 
 	@property
-	def _is_initializated_on_open(self):
+	def _is_initialized_on_open(self):
 		return False

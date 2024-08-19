@@ -43,7 +43,7 @@ class BasicAsset(Basic):
 		return self.asset.id
 
 	@property
-	def raw(self) -> Optional[str]:
+	def raw_content(self) -> Optional[str]:
 		"""
 		Get the raw content of the asset.
 
@@ -65,8 +65,8 @@ class BasicAsset(Basic):
 				''
 			)
 
-	@raw.setter
-	def raw(self, content: str):
+	@raw_content.setter
+	def raw_content(self, content: str):
 		"""
 		Edit the original format of the asset.
 
