@@ -123,3 +123,10 @@ class TestBasicChat:
         chat.delete()
         
         ConversationsSnapshot.pieces_client.conversations_api.conversations_delete_specific_conversation.assert_called_once_with("test_id")
+
+    @patch.object(ConversationsSnapshot, 'pieces_client')
+    def test_edit_conversation(self, mock_pieces_client):
+        mock_conversation = Mock()
+        BasicChat._edit_conversation(mock_conversation)
+        
+        mock_pieces_client.conversation_api.conversation_update.assert_called_once_with(False, mock_conversation)
