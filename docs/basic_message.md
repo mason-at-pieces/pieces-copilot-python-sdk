@@ -1,5 +1,7 @@
 # BasicMessage
 
+This represents a Copilot chat message to opentain that model you should be using `pieces_client.copilot.chat.messages()` to opentain the messages of the current chat.
+
 ## Properties
 
 ### `raw_content`

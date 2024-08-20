@@ -34,8 +34,8 @@ Note: the question is not a part of any conversation.
 
 **Args:**
     query (str): The question to ask.
-    relevant_qgpt_seeds (RelevantQGPTSeeds): Context to the model .
-    pipeline (Optional[QGPTPromptPipeline]): the pipeline to use.
+    relevant_qgpt_seeds ([RelevantQGPTSeeds](https://docs.pieces.app/build/reference/python/models/QGPTPromptPipeline/RelevantQGPTSeeds))): Context to the model .
+    pipeline (Optional[[QGPTPromptPipeline](https://docs.pieces.app/build/reference/python/models/QGPTPromptPipeline)]): the pipeline to use.
 
 **returns:**
     [QGPTQuestionOutput](https://docs.pieces.app/build/reference/python/models/QGPTQuestionOutput): The streamed output from the QGPT model.
