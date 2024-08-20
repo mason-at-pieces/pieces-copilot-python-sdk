@@ -7,6 +7,8 @@ from pieces_os_client import (SeededConversation,
     QGPTStreamEnum,
     QGPTQuestionOutput)
 from pieces_os_client.models.qgpt_prompt_pipeline import QGPTPromptPipeline
+
+from pieces_copilot_sdk.context import Context
 from .basic_identifier.chat import BasicChat
 from .streamed_identifiers.conversations_snapshot import ConversationsSnapshot
 from .websockets import AskStreamWS
@@ -32,11 +34,11 @@ class Copilot:
         self.pieces_client = pieces_client
         self._on_message_queue = queue.Queue()
         self.ask_stream_ws = AskStreamWS(self.pieces_client, self._on_message_queue.put)
+        self.context = Context(pieces_client)
         self._chat = None
 
     def stream_question(self,
             query: str,
-            relevant_qgpt_seeds: RelevantQGPTSeeds = RelevantQGPTSeeds(iterable=[]),
             pipeline: Optional[QGPTPromptPipeline] = None
             ) -> Generator[QGPTStreamOutput, None, None]:
         """
@@ -46,17 +48,17 @@ class Copilot:
 
         Args:
             query (str): The question to ask.
-            relevant_qgpt_seeds (RelevantQGPTSeeds): Context to the model .
             pipeline (Optional[QGPTPromptPipeline]): the pipeline to use.
 
         Yields:
             QGPTStreamOutput: The streamed output from the QGPT model.
         """
         id = self._chat.id if self._chat else None
+        relevant = self.context._relevance_api(query) if self.context._check_relevant_existance else RelevantQGPTSeeds(iterable=[])
         self.ask_stream_ws.send_message(
             QGPTStreamInput(
                 question=QGPTQuestionInput(
-                    relevant=relevant_qgpt_seeds,
+                    relevant=relevant,
                     query=query,
                     application=self.pieces_client.tracked_application.id,
                     model=self.pieces_client.model_id,
@@ -120,6 +122,7 @@ class Copilot:
         Returns:
             Optional[BasicChat]: The current chat instance or None if no chat is set.
         """
+        self.context.clear() # clear the context on changing the conversation
         return self._chat
 
     @chat.setter
@@ -136,3 +139,5 @@ class Copilot:
         if not (chat is None or isinstance(chat, BasicChat)):
             raise ValueError("Not a valid chat")
         self._chat = chat
+
+

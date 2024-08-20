@@ -34,7 +34,6 @@ Note: the question is not a part of any conversation.
 
 **Args:**
     query (str): The question to ask.
-    relevant_qgpt_seeds ([RelevantQGPTSeeds](https://docs.pieces.app/build/reference/python/models/QGPTPromptPipeline/RelevantQGPTSeeds))): Context to the model .
     pipeline (Optional[[QGPTPromptPipeline](https://docs.pieces.app/build/reference/python/models/QGPTPromptPipeline)]): the pipeline to use.
 
 **returns:**
@@ -50,6 +49,18 @@ text = pieces_client.copilot.question("Your question").answers.iterable[0].text
 print(text)
 ```
 
+### Property: `context`
+
+Returns a context model to interact with the conversation context.
+```python
+context = copilot.context
+context.paths.append("/path/to/folder/or/file")
+context.message.append(BasicMessage("my_message_id"))
+context.assets.append(BasicAsset("my_message_id"))
+context.raw_assets.append("import sublime") # snippet content
+context.clear() # clear all the context
+````
+Note if you setted the context of the copilot you will get a value error in the ask_stream method if you added an invalid type
 
 ### Method: `chats`
 

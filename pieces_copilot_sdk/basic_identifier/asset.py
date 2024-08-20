@@ -199,8 +199,7 @@ class BasicAsset(Basic):
 		"""
 		AssetSnapshot.pieces_client.assets_api.assets_delete_asset(self.id)
 
-	@staticmethod
-	def create(raw: str, metadata: Optional[FragmentMetadata] = None) -> str:
+	def create(self,raw: str, metadata: Optional[FragmentMetadata] = None) -> str:
 		"""
 		Create a new asset.
 
@@ -211,7 +210,14 @@ class BasicAsset(Basic):
 		Returns:
 			str: The ID of the created asset.
 		"""
-		seed = Seed(
+		seed = self._get_seed(raw,metadata)
+
+		created_asset_id = AssetSnapshot.pieces_client.assets_api.assets_create_new_asset(transferables=False, seed=seed).id
+		return created_asset_id
+
+	@staticmethod
+	def _get_seed(raw: str, metadata: Optional[FragmentMetadata] = None) -> Seed:
+		return Seed(
 			asset=SeededAsset(
 				application=AssetSnapshot.pieces_client.tracked_application,
 				format=SeededFormat(
@@ -224,10 +230,6 @@ class BasicAsset(Basic):
 			),
 			type="SEEDED_ASSET"
 		)
-
-		created_asset_id = AssetSnapshot.pieces_client.assets_api.assets_create_new_asset(transferables=False, seed=seed).id
-		return created_asset_id
-
 
 	def _get_ocr_content(self) -> Optional[str]:
 		"""
