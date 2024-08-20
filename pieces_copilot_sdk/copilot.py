@@ -8,7 +8,7 @@ from pieces_os_client import (SeededConversation,
     QGPTQuestionOutput)
 from pieces_os_client.models.qgpt_prompt_pipeline import QGPTPromptPipeline
 
-from pieces_copilot_sdk.context import Context
+from .context import Context
 from .basic_identifier.chat import BasicChat
 from .streamed_identifiers.conversations_snapshot import ConversationsSnapshot
 from .websockets import AskStreamWS

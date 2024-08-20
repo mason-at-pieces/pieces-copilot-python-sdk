@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from pieces_copilot_sdk.basic_identifier import BasicAsset,BasicMessage
+from .basic_identifier import BasicAsset,BasicMessage
 import os
 from pieces_os_client import QGPTRelevanceInput,Seeds,FlattenedAssets,FlattenedConversationMessages
 
