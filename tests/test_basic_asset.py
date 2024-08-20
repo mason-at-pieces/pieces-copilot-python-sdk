@@ -54,9 +54,9 @@ def test_basic_asset_initialization(mock_asset_snapshot, mock_asset):
     asset = BasicAsset(mock_asset.id)
     assert asset.asset == mock_asset
 
-def test_raw_property(mock_asset_snapshot, mock_asset):
+def test_raw_content_property(mock_asset_snapshot, mock_asset):
     asset = BasicAsset(mock_asset.id)
-    assert asset.raw == "Test content"
+    assert asset.raw_content == "Test content"
 
 def test_is_image(mock_asset_snapshot, mock_asset):
     asset = BasicAsset(mock_asset.id)
@@ -82,7 +82,7 @@ def test_edit_content(mock_asset_snapshot, mock_asset, pieces_client):
         mock_format.fragment.string.raw = "Test content"
         mock_format_api.format_snapshot.return_value = mock_format
         
-        asset.raw = new_content
+        asset.raw_content = new_content
         
         mock_format_api.format_update_value.assert_called_once()
         assert mock_format.fragment.string.raw == new_content
