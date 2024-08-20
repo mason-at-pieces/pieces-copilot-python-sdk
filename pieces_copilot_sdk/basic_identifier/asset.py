@@ -127,6 +127,8 @@ class BasicAsset(Basic):
 			NotImplementedError: If the asset is an image, reclassification is not supported.
 		"""
 		if isinstance(classification, str):
+			if classification not in ClassificationSpecificEnum:
+				raise ValueError(f"Classification must be one from {list(ClassificationSpecificEnum)}")
 			classification = ClassificationSpecificEnum(classification)
 
 		if not isinstance(classification, ClassificationSpecificEnum):
@@ -199,7 +201,8 @@ class BasicAsset(Basic):
 		"""
 		AssetSnapshot.pieces_client.assets_api.assets_delete_asset(self.id)
 
-	def create(self,raw: str, metadata: Optional[FragmentMetadata] = None) -> str:
+	@classmethod
+	def create(cls,raw: str, metadata: Optional[FragmentMetadata] = None) -> str:
 		"""
 		Create a new asset.
 
@@ -210,7 +213,7 @@ class BasicAsset(Basic):
 		Returns:
 			str: The ID of the created asset.
 		"""
-		seed = self._get_seed(raw,metadata)
+		seed = cls._get_seed(raw,metadata)
 
 		created_asset_id = AssetSnapshot.pieces_client.assets_api.assets_create_new_asset(transferables=False, seed=seed).id
 		return created_asset_id
