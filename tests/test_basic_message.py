@@ -148,3 +148,38 @@ class TestBasicMessage:
     def test_repr(self):
         message = BasicMessage(self.mock_pieces_client, "test_message_id")
         assert repr(message) == "<BasicMessage(id=test_message_id)>"
+
+    def test_eq(self):
+        # Create separate mock messages for each BasicMessage instance
+        mock_message1 = Mock()
+        mock_message1.id = "test_message_id_1"
+        mock_message2 = Mock()
+        mock_message2.id = "test_message_id_1"  # Same as message1
+        mock_message3 = Mock()
+        mock_message3.id = "test_message_id_2"  # Different from message1 and message2
+
+        # Mock the API call to return different mock messages based on the input ID
+        def mock_get_message(message, transferables):
+            if message == "test_message_id_1":
+                return mock_message1
+            elif message == "test_message_id_2":
+                return mock_message3
+            else:
+                raise ValueError("Unexpected message ID")
+
+        self.mock_pieces_client.conversation_message_api.message_specific_message_snapshot.side_effect = mock_get_message
+
+        message1 = BasicMessage(self.mock_pieces_client, "test_message_id_1")
+        message2 = BasicMessage(self.mock_pieces_client, "test_message_id_1")
+        message3 = BasicMessage(self.mock_pieces_client, "test_message_id_2")
+
+        assert message1 == message2
+        assert message1 != message3
+        assert message1 != "not_a_message"
+
+        # Verify that the API was called with the correct IDs
+        self.mock_pieces_client.conversation_message_api.message_specific_message_snapshot.assert_has_calls([
+            call(message="test_message_id_1", transferables=True),
+            call(message="test_message_id_1", transferables=True),
+            call(message="test_message_id_2", transferables=True)
+        ])
