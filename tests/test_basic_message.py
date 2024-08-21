@@ -56,3 +56,10 @@ class TestBasicMessage:
 
         # Mock the API call
         self.mock_pieces_client.conversation_message_api.message_specific_message_snapshot.return_value = self.mock_message
+
+    def test_init_valid_id(self):
+        message = BasicMessage(self.mock_pieces_client, "test_message_id")
+        assert message.id == "test_message_id"
+        self.mock_pieces_client.conversation_message_api.message_specific_message_snapshot.assert_called_once_with(
+            message="test_message_id", transferables=True
+        )
