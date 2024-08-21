@@ -130,3 +130,11 @@ class BasicCopilotTest(unittest.TestCase):
         
         self.assertEqual(result, mock_output)
         self.mock_client.qgpt_api.question.assert_called_once()
+
+    def test_chats(self):
+        ConversationsSnapshot.identifiers_snapshot = {"chat1": Mock(), "chat2": Mock()}
+        chats = self.copilot.chats()
+        
+        self.assertEqual(len(chats), 2)
+        self.assertIsInstance(chats[0], BasicChat)
+        self.assertIsInstance(chats[1], BasicChat)
