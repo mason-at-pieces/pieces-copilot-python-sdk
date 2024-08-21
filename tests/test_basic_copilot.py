@@ -120,3 +120,13 @@ class BasicCopilotTest(unittest.TestCase):
         
         # Assert that send_message was called once
         mock_send_message.assert_called_once()
+
+    def test_question(self):
+        query = "Test question"
+        mock_output = Mock(text="Test answer", answers=[])
+        self.mock_client.qgpt_api.question.return_value = mock_output
+        
+        result = self.copilot.question(query)
+        
+        self.assertEqual(result, mock_output)
+        self.mock_client.qgpt_api.question.assert_called_once()
