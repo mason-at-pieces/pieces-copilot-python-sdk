@@ -80,3 +80,7 @@ class TestBasicMessage:
         self.mock_pieces_client.conversation_message_api.message_update_value.assert_called_once_with(
             False, message.message
         )
+
+    def test_role_property(self):
+        message = BasicMessage(self.mock_pieces_client, "test_message_id")
+        assert message.role == "USER"
