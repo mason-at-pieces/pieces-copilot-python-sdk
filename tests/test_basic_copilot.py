@@ -63,3 +63,5 @@ import threading
 from pieces_os_client import Conversation, StreamedIdentifiers, Asset
 import threading
 from websockets import *
+from pieces_copilot_sdk.copilot import Copilot
+from pieces_copilot_sdk.client import PiecesClient
