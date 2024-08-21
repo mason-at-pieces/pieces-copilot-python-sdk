@@ -93,3 +93,10 @@ class BasicCopilotTest(unittest.TestCase):
 
     def tearDown(self):
         patch.stopall()
+
+    def test_init(self):
+        self.assertIsInstance(self.copilot, Copilot)
+        self.assertEqual(self.copilot.pieces_client, self.mock_client)
+        self.assertIsInstance(self.copilot._on_message_queue, Queue)
+        self.assertIsInstance(self.copilot.ask_stream_ws, AskStreamWS)
+        self.assertIsNone(self.copilot._chat)
