@@ -65,3 +65,7 @@ import threading
 from websockets import *
 from pieces_copilot_sdk.copilot import Copilot
 from pieces_copilot_sdk.client import PiecesClient
+from pieces_copilot_sdk.basic_identifier.asset import BasicAsset
+from pieces_copilot_sdk.basic_identifier.basic import Basic
+from pieces_copilot_sdk.basic_identifier.message import BasicMessage
+from pieces_copilot_sdk.basic_identifier.chat import BasicChat
