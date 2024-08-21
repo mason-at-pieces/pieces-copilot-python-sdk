@@ -72,3 +72,11 @@ class TestBasicMessage:
     def test_raw_property(self):
         message = BasicMessage(self.mock_pieces_client, "test_message_id")
         assert message.raw == "Test message content"
+
+    def test_raw_setter(self):
+        message = BasicMessage(self.mock_pieces_client, "test_message_id")
+        message.raw = "New content"
+        assert message.message.fragment.string.raw == "New content"
+        self.mock_pieces_client.conversation_message_api.message_update_value.assert_called_once_with(
+            False, message.message
+        )
