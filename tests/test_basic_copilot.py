@@ -72,3 +72,21 @@ from pieces_copilot_sdk.basic_identifier.chat import BasicChat
 from pieces_copilot_sdk.streamed_identifiers.assets_snapshot import AssetSnapshot
 from pieces_copilot_sdk.streamed_identifiers._streamed_identifiers import StreamedIdentifiersCache
 from pieces_copilot_sdk.streamed_identifiers.conversations_snapshot import ConversationsSnapshot
+
+class BasicCopilotTest(unittest.TestCase):
+    def setUp(self):
+        self.mock_client = Mock()
+        self.mock_client.tracked_application = Mock(id="mock_app_id")
+        self.mock_client.model_id = "mock_model_id"
+        self.mock_client.qgpt_api = Mock()
+        
+        # Define a real BasicChat class for testing
+        global BasicChat
+        class BasicChat:
+            def __init__(self, id):
+                self.id = id
+        
+        self.copilot = Copilot(self.mock_client)
+
+        # Mock ConversationsSnapshot
+        self.mock_conversations = patch('__main__.ConversationsSnapshot.identifiers_snapshot', {"test_conversation_id": Mock()}).start()
