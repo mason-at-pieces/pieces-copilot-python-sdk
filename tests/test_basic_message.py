@@ -43,3 +43,16 @@ from pieces_copilot_sdk.streamed_identifiers.assets_snapshot import AssetSnapsho
 from pieces_copilot_sdk.streamed_identifiers._streamed_identifiers import StreamedIdentifiersCache
 from pieces_copilot_sdk.streamed_identifiers.conversations_snapshot import ConversationsSnapshot
 
+# Test class
+class TestBasicMessage:
+    @pytest.fixture(autouse=True)
+    def setup(self):
+        self.mock_pieces_client = Mock()
+        self.mock_message = Mock()
+        self.mock_message.id = "test_message_id"
+        self.mock_message.fragment.string.raw = "Test message content"
+        self.mock_message.role.value = "USER"
+        self.mock_message.annotations = None
+
+        # Mock the API call
+        self.mock_pieces_client.conversation_message_api.message_specific_message_snapshot.return_value = self.mock_message
