@@ -113,3 +113,7 @@ class TestBasicMessage:
         assert isinstance(annotations, Annotations)
         assert len(annotations.iterable) == 1
         assert annotations.iterable[0].id == "test_annotation_id"
+
+    def test_description_property_no_annotations(self):
+        message = BasicMessage(self.mock_pieces_client, "test_message_id")
+        assert message.description is None
