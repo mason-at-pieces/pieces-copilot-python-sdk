@@ -1,5 +1,5 @@
 # Copilot
-### Method: `ask`
+### Method: `stream_question`
 
 Asks a question to the QGPT model and streams the responses.
 by default it will create a new conversation and always use it in the ask.
@@ -8,7 +8,7 @@ You can always change the conversation in copilot.chat = BasicChat(chat_id="YOU 
 
 **Args:**
 - `query` (str): The question to ask.
-- `relevant_qgpt_seeds` ([RelevantQGPTSeeds](https://docs.pieces.app/build/reference/python/models/RelevantQGPTSeeds)): Sets the conversation context.
+- `pipeline` (Optional[QGPTPromptPipeline](https://docs.pieces.app/build/reference/python/models/QGPTPromptPipeline)): pipeline to follow.
 
 
 **Yields:**

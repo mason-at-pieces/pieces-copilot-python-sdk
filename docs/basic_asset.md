@@ -76,7 +76,7 @@ Delete the asset.
 Create a new asset.
 
 **Args**:
-- `raw` (str): The raw content of the asset.
+- `raw_content` (str): The raw content of the asset.
 - `metadata` (Optional[FragmentMetadata]): The metadata of the asset.
 
 **Returns**: `str` - The ID of the created asset.
