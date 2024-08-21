@@ -100,3 +100,23 @@ class BasicCopilotTest(unittest.TestCase):
         self.assertIsInstance(self.copilot._on_message_queue, Queue)
         self.assertIsInstance(self.copilot.ask_stream_ws, AskStreamWS)
         self.assertIsNone(self.copilot._chat)
+
+    @patch('__main__.AskStreamWS')
+    def test_ask(self, mock_ask_stream_ws):
+        query = "Test query"
+        mock_output = Mock(status=QGPTStreamEnum.COMPLETED, conversation="test_conversation_id", text="Test response")
+        self.copilot._on_message_queue.put(mock_output)
+        
+        # Create a mock for send_message
+        mock_send_message = Mock()
+        self.copilot.ask_stream_ws.send_message = mock_send_message
+        
+        result = list(self.copilot.ask(query))
+        
+        self.assertEqual(len(result), 1)
+        self.assertEqual(result[0], mock_output)
+        self.assertIsInstance(self.copilot.chat, BasicChat)
+        self.assertEqual(self.copilot.chat.id, "test_conversation_id")
+        
+        # Assert that send_message was called once
+        mock_send_message.assert_called_once()
