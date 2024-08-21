@@ -95,3 +95,7 @@ class TestBasicMessage:
         self.mock_pieces_client.conversation_messages_api.messages_delete_specific_message.assert_called_once_with(
             "test_message_id"
         )
+
+    def test_annotations_property_none(self):
+        message = BasicMessage(self.mock_pieces_client, "test_message_id")
+        assert message.annotations is None
