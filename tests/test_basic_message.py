@@ -99,3 +99,17 @@ class TestBasicMessage:
     def test_annotations_property_none(self):
         message = BasicMessage(self.mock_pieces_client, "test_message_id")
         assert message.annotations is None
+
+    def test_annotations_property_with_annotations(self):
+        mock_annotation = Mock()
+        mock_annotation.id = "test_annotation_id"
+        self.mock_message.annotations = Mock(iterable=[Mock(id="test_annotation_id")])
+        self.mock_pieces_client.annotation_api.annotation_specific_annotation_snapshot.return_value = mock_annotation
+
+        message = BasicMessage(self.mock_pieces_client, "test_message_id")
+        annotations = message.annotations
+
+        assert annotations is not None
+        assert isinstance(annotations, Annotations)
+        assert len(annotations.iterable) == 1
+        assert annotations.iterable[0].id == "test_annotation_id"
