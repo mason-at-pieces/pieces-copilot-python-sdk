@@ -72,7 +72,7 @@ print(f"Updated Conversation Name: {chat.name}")
 # Retrieve the messages in the conversation
 messages = chat.messages()
 for message in messages:
-    print(f"Message: {message.raw}")
+    print(f"Message: {message.raw_content}")
     print(f"Message Role: {message.role}")
 
 # Get the annotations of the conversation
