@@ -32,3 +32,6 @@ from typing import Dict, List, Union, Callable, TYPE_CHECKING
 from pieces_os_client import Conversation, StreamedIdentifiers, Asset
 from abc import ABC, abstractmethod
 import threading
+from websockets import *
+from pieces_copilot_sdk.copilot import Copilot
+from pieces_copilot_sdk.client import PiecesClient
