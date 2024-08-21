@@ -88,3 +88,10 @@ class TestBasicMessage:
     def test_id_property(self):
         message = BasicMessage(self.mock_pieces_client, "test_message_id")
         assert message.id == "test_message_id"
+
+    def test_delete_method(self):
+        message = BasicMessage(self.mock_pieces_client, "test_message_id")
+        message.delete()
+        self.mock_pieces_client.conversation_messages_api.messages_delete_specific_message.assert_called_once_with(
+            "test_message_id"
+        )
