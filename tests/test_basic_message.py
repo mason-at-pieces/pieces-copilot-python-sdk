@@ -144,3 +144,7 @@ class TestBasicMessage:
 
         # Verify that the annotation API was called
         self.mock_pieces_client.annotation_api.annotation_specific_annotation_snapshot.assert_called_once_with("test_annotation_id")
+
+    def test_repr(self):
+        message = BasicMessage(self.mock_pieces_client, "test_message_id")
+        assert repr(message) == "<BasicMessage(id=test_message_id)>"
