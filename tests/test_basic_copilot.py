@@ -138,3 +138,13 @@ class BasicCopilotTest(unittest.TestCase):
         self.assertEqual(len(chats), 2)
         self.assertIsInstance(chats[0], BasicChat)
         self.assertIsInstance(chats[1], BasicChat)
+
+    def test_chat_property(self):
+        self.assertIsNone(self.copilot.chat)
+        
+        test_chat = BasicChat("test_conversation_id")
+        self.copilot.chat = test_chat
+        self.assertEqual(self.copilot.chat, test_chat)
+        
+        with self.assertRaises(ValueError):
+            self.copilot.chat = "invalid_chat"
