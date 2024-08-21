@@ -84,3 +84,7 @@ class TestBasicMessage:
     def test_role_property(self):
         message = BasicMessage(self.mock_pieces_client, "test_message_id")
         assert message.role == "USER"
+
+    def test_id_property(self):
+        message = BasicMessage(self.mock_pieces_client, "test_message_id")
+        assert message.id == "test_message_id"
