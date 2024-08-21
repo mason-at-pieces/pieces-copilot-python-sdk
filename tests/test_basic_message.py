@@ -117,3 +117,30 @@ class TestBasicMessage:
     def test_description_property_no_annotations(self):
         message = BasicMessage(self.mock_pieces_client, "test_message_id")
         assert message.description is None
+
+    def test_description_property_with_description(self):
+        # Create a mock annotation with the correct structure
+        mock_annotation = Mock()
+        mock_annotation.type = AnnotationTypeEnum.DESCRIPTION
+        mock_annotation.text = "Test description"
+
+        # Set up the mock message with annotations
+        self.mock_message.annotations = Mock(iterable=[Mock(id="test_annotation_id")])
+
+        # Mock the annotation API call
+        self.mock_pieces_client.annotation_api.annotation_specific_annotation_snapshot.return_value = mock_annotation
+
+        # Create the BasicMessage instance
+        message = BasicMessage(self.mock_pieces_client, "test_message_id")
+
+        # Replace the message's annotations with our mocked annotations
+        message.message.annotations = self.mock_message.annotations
+
+        # Now test the description property
+        description = message.description
+        print("Returned description:", description)
+
+        assert description == "Test description"
+
+        # Verify that the annotation API was called
+        self.mock_pieces_client.annotation_api.annotation_specific_annotation_snapshot.assert_called_once_with("test_annotation_id")
