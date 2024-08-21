@@ -187,3 +187,7 @@ class TestBasicMessage:
     def test_str(self):
         message = BasicMessage(self.mock_pieces_client, "test_message_id")
         assert str(message) == "ID: test_message_id"
+
+    def test_hash(self):
+        message = BasicMessage(self.mock_pieces_client, "test_message_id")
+        assert hash(message) == hash("test_message_id")
