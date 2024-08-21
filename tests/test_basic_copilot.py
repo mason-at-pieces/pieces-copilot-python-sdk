@@ -90,3 +90,6 @@ class BasicCopilotTest(unittest.TestCase):
 
         # Mock ConversationsSnapshot
         self.mock_conversations = patch('__main__.ConversationsSnapshot.identifiers_snapshot', {"test_conversation_id": Mock()}).start()
+
+    def tearDown(self):
+        patch.stopall()
